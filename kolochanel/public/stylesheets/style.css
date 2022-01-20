@@ -3,6 +3,22 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+div.center {
+  line-height: 1.5;
+  display: inline-block;
+  text-align: center;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+button.center_button {
+  line-height: 1.5;
+  width: 10%;
+}
+
+
 a {
   color: #00B7FF;
 }
