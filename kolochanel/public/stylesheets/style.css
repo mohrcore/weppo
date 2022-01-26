@@ -3,7 +3,7 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-div.center {
+.center {
   line-height: 1.5;
   display: inline-block;
   text-align: center;
@@ -13,7 +13,7 @@ div.center {
   width: 100%;
 }
 
-button.center_button {
+.center_button {
   line-height: 1.5;
   width: 10%;
 }
