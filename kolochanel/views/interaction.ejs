@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <div class = "center">
+      <h1>INTERACTION VIEW</h1>
+    </div>
+    <hr>
+    <div class="center">
+      <% for(var i=0; i < interactions.length; i++) { %>
+        <div>
+          <p> interaction id <%= interactions[i]._id %> </p> 
+            <div style="width:100%;">
+              <div style="float:left; width: 50%; background:lightgreen">
+                <p>test L </p>
+              </div>
+              <div style="float:right; width: 50%; background:lightsalmon">
+                <p>test R</p>            
+              </div>
+            </div>
+          </div>
+          <div style="width:100%;">
+            <hr style="float:left; width:100%;">
+          </div>
+          <% } %>
+    </div>
+  </body>
+</html>
