@@ -13,12 +13,12 @@
       <% for(var i=0; i < interactions.length; i++) { %>
         <div>
           <p> interaction id <%= interactions[i]._id %> </p> 
-            <div style="width:100%;">
+            <div style="width:100%; display: flex">
               <div style="float:left; width: 50%; background:lightgreen">
-                <p>test L </p>
+                <p>user comment: <%= commentmap[interactions[i].client_comment_reference] %></p>
               </div>
               <div style="float:right; width: 50%; background:lightsalmon">
-                <p>test R</p>            
+                <p>host comment: <%= commentmap[interactions[i].host_comment_reference] %></p>            
               </div>
             </div>
           </div>
