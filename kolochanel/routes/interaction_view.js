@@ -29,48 +29,89 @@ const CommentSchema = new mongoose.Schema({
 
 const Comment = mongoose.model('comments', CommentSchema);
 
+// take a hint for mongoose query
+// return array of
+// - interactions - interactions list (objects same as InteractionSchema)
+// - required_comments - dictionary from comment id to none (to be fetched later)
+// - required_responses - dictionary from response id to none (to be fetched later)
+async function get_and_squash_interaction_query(interaction_hint) {
+    let p_interactions = []
+    let required_comments = {}
+    let required_responses = {}
+
+    let rinteractions = await Interaction.find(interaction_hint)
+    let interactions = rinteractions.sort((a, b) => a.timestamp > b.timestamp);
+    for (let interaction of interactions) {
+        p_interactions.push({
+            _id: interaction._id,
+            client_comment_reference: interaction.client_comment_reference ? interaction.client_comment_reference : "None",
+            host_comment_reference: interaction.host_comment_reference ? interaction.host_comment_reference : "None",
+            timestamp: interaction.timestamp ? interaction.timestamp : "None",
+            client_userid: interaction.client_userid ? interaction.client_userid : "None",
+            host_userid: interaction.host_userid ? interaction.host_userid : "None",
+            host_response_reference: interaction.host_response_reference ? interaction.host_response_reference : "None",
+            client_response_reference: interaction.client_response_reference ? interaction.client_response_reference : "None",
+        })
+
+        if (interaction.client_comment_reference)
+            required_comments[interaction.client_comment_reference] = null
+
+        if (interaction.host_comment_reference)
+            required_comments[interaction.host_comment_reference] = null
+        
+        if (interaction.client_response_reference)
+            required_comments[interaction.client_response_reference] = null
+
+        if (interaction.host_response_reference)
+            required_comments[interaction.host_response_reference] = null
+
+        }
+    
+    var response = {
+        prepared_interactions: p_interactions,
+        comment_map: required_comments,
+        response_map: required_responses,
+    }
+    return response;
+}
+
+// take the mapping for comment uuids
+// return array of
+// - comment_map - filled out comment mapping
+async function get_and_squash_comment_query(comment_mapping) {
+    let comments = await Comment.find({}) // TODO: query only required
+    let commentmap = {}
+
+    for(let c of comments) {
+        commentmap[c._id] = {
+            content: c.comment_contents ? c.comment_contents : "None",
+            author: c.author ? c.author : "None",
+            timestamp: c.timestamp ? c.timestamp : "None",
+            resource_uri: c.resource_uri ? c.resource_uri : "None",
+        } 
+    }
+
+    commentmap["None"] = "None"
+
+    var response = {
+        comment_map: commentmap
+    }
+
+    return response
+}
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-    Interaction.find().then(
-        interactions => {
-            let sorted_interactions_qrp = interactions.sort((a, b) => a.timestamp > b.timestamp);
-            let sorted_interactions = []
+router.get('/', async(req, res, next) => {
+    let inter_query = await get_and_squash_interaction_query({})
+    let comm_query = await get_and_squash_comment_query(inter_query.comment_map)
+    inter_query.comment_map = comm_query.comment_map;
 
-            let required_comments = {}
-            for (let inter of sorted_interactions_qrp) {
-                sorted_interactions.push({
-                    _id: inter._id,
-                    client_comment_reference: inter.client_comment_reference ? inter.client_comment_reference : "None",
-                    host_comment_reference: inter.host_comment_reference ? inter.host_comment_reference : "None",
-                })
-
-                if (inter.client_comment_reference)
-                    required_comments[inter.client_comment_reference] = null
-
-                if (inter.host_comment_reference)
-                    required_comments[inter.host_comment_reference] = null
-            } 
-            
-            console.log(required_comments) // TODO: odpytaj DB tylko o to co potrzeba.
-
-            Comment.find().then(
-                comments => {
-                    let commentdict = {};
-                    for (let c of comments) {
-                        commentdict[c._id] = c.comment_contents ? c.comment_contents : "None" 
-                    }
-                    commentdict["None"] = "None"
-
-                    console.log(commentdict)
-                    res.render('interaction', 
-                    { 
-                        title: 'Express', 
-                        interactions: sorted_interactions,
-                        commentmap: commentdict
-                    });
-                })
-        })
+    console.log(inter_query) // TODO: odpytaj DB tylko o to co potrzeba.
+    res.render(
+        'interaction', 
+        { 
+            interaction_descriptor: inter_query
+        });
 });
 
 module.exports = router;
