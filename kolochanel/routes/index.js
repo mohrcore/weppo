@@ -16,7 +16,7 @@ router.get('/login', function(req, res) {
   res.render('login');
 });
 
-router.post('/login_user', async(req, res, next) => {
+router.post('/login_user', async (req, res, next) => {
   let login_status = await dbops.login_user(
     req.body.username, req.body.pwd
   );
@@ -29,11 +29,11 @@ router.post('/login_user', async(req, res, next) => {
       });
     }
   } else {
-    res.redirect('index');
+    res.redirect('/');
   }
 });
 
-router.post('/register_user', async(req, res, next) => {
+router.post('/register_user', async (req, res, next) => {
   let registration_status = await dbops.create_user(
     req.body.username, req.body.email, req.body.pwd
   );
@@ -47,7 +47,7 @@ router.post('/register_user', async(req, res, next) => {
       res.render('registration_failed', {error_message: `Na email ${req.body.email} założone zostało już konto`, rplace: 'register'});
     }
   } else {
-    res.redirect('index');
+    res.redirect('/');
   }
 });
 
