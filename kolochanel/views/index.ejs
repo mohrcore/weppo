@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>KOLO CHANEL</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script>
+      function goRegister() {
+        window.location.href = "/register";
+      }
+      function goLogin() {
+        window.location.href = "/register";
+      }
+    </script>
   </head>
   <body>
-    <div class = "center">
+    <div class="center">
       <h1>KOLO CHANEL</h1>
     </div>
     
@@ -14,9 +22,9 @@
     </div>
   
     <div class="center">
-      <button class="center_button" type="button">Załóż konto</button>
+      <button class="center_button" type="button" onclick="goRegister()">Załóż konto</button>
       <br> 
-      <button class="center_button" type="button">Zaloguj</button> 
+      <button class="center_button" type="button" onclick="goLogin()">Zaloguj</button> 
     </div>
   
   </body>
