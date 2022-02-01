@@ -1,0 +1,4 @@
+{"_id":{"$oid":"61f8877e8aa50a6ce86528f5"},"timestamp":{"$date":"2022-02-01T01:06:06.494Z"},"username":"a","email":"b","password":"c","__v":0}
+{"_id":{"$oid":"61f8888bb463dd4a59e39d90"},"timestamp":{"$date":"2022-02-01T01:10:35.336Z"},"username":"b","email":"c","password":"dupa","__v":0}
+{"_id":{"$oid":"61f897eb21056c90e716a67d"},"timestamp":{"$date":"2022-02-01T02:16:11.756Z"},"username":"test_1","email":"test_1","password":"test_1","__v":0}
+{"_id":{"$oid":"61f8981021056c90e716a687"},"timestamp":{"$date":"2022-02-01T02:16:48.324Z"},"username":"test_2","email":"test_2","password":"test_2","__v":0}

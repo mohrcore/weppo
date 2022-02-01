@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 
 const InteractionSchema = new mongoose.Schema({
-    _id: mongoose.ObjectId,
     timestamp: {type: mongoose.Date, required: true},
     host_userid: {type: mongoose.Types.ObjectId, required: true},
     client_userid: {type: mongoose.Types.ObjectId, required: true},
@@ -13,14 +12,20 @@ const InteractionSchema = new mongoose.Schema({
     client_response_reference: {type: mongoose.Types.ObjectId, required: false}
 });
 
-
 const CommentSchema = new mongoose.Schema({
-    _id: mongoose.ObjectId,
     timestamp: {type: mongoose.Date, required: true},
     author: {type: mongoose.Types.ObjectId, required: true},
     comment_contents: {type: String, required: false},
     resource_uri: {type: String, required: false},
 });
 
+const UserSchema = new mongoose.Schema({
+    timestamp: {type: mongoose.Date, required: true},
+    username: {type: String, required: true},
+    email: {type: String, required: true},
+    password: {type: String, required: true},
+});
+
 exports.InteractionSchema = InteractionSchema;
 exports.CommentSchema = CommentSchema;
+exports.UserSchema = UserSchema;

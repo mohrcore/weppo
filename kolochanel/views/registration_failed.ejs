@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>KOLO CHANEL</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script>
+      function goRegister() {
+        window.location.href = "/register";
+      }
+    </script>
+  </head>
+  <body>
+    <div class="center">
+      <h1>KOLO CHANEL</h1>
+    </div>
+    
+    <div class="center">
+      <p>Portal anonsów sanitarnych</p>
+    </div>
+  
+    <div class="center">
+      <h2><%= error_message %></h2>
+      <br>
+      <button class="center_button" type="button" onclick="goRegister()">Powróć do rejestracji</button>
+    </div>
+  
+  </body>
+</html>
