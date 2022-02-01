@@ -33,4 +33,18 @@ async function create_user(username, email, passwd) {
     return new_user._id;
 }
 
+async function login_user(username, passwd) {
+    let existing_user = await User.findOne({
+        username: username,
+        password: passwd
+    });
+
+    console.log(existing_user)
+    if (existing_user == null)
+        return "no_account"
+
+    return existing_user._id;
+}
+
 exports.create_user = create_user
+exports.login_user = login_user

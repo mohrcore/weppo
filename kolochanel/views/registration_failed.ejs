@@ -7,6 +7,9 @@
       function goRegister() {
         window.location.href = "/register";
       }
+      function goLogin() {
+        window.location.href = "/login";
+      }
     </script>
   </head>
   <body>
@@ -21,7 +24,11 @@
     <div class="center">
       <h2><%= error_message %></h2>
       <br>
-      <button class="center_button" type="button" onclick="goRegister()">Powróć do rejestracji</button>
+      <% if(rplace == 'login') { %>
+        <button class="center_button" type="button" onclick="goLogin()">Powróć do logowania</button> 
+      <% } else { %>
+        <button class="center_button" type="button" onclick="goRegister()">Powróć do rejestracji</button>              
+      <% } %>
     </div>
   
   </body>
