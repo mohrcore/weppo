@@ -1,33 +1,11 @@
 var express = require('express');
 var router = express.Router();
-
 var mongoose = require('mongoose');
+
 mongoose.connect('mongodb://localhost:27017/kolo')
-
-const InteractionSchema = new mongoose.Schema({
-    _id: mongoose.ObjectId,
-    timestamp: {type: mongoose.Date, required: true},
-    host_userid: {type: mongoose.Types.ObjectId, required: true},
-    client_userid: {type: mongoose.Types.ObjectId, required: true},
-    host_rating_stars: {type: mongoose.Number, required: false},
-    client_rating_stars: {type: mongoose.Number, required: false},
-    host_comment_reference: {type: mongoose.Types.ObjectId, required: false},
-    client_comment_reference: {type: mongoose.Types.ObjectId, required: false},
-    host_response_reference: {type: mongoose.Types.ObjectId, required: false},
-    client_response_reference: {type: mongoose.Types.ObjectId, required: false}
-});
-
-const Interaction = mongoose.model('interactions', InteractionSchema);
-
-const CommentSchema = new mongoose.Schema({
-    _id: mongoose.ObjectId,
-    timestamp: {type: mongoose.Date, required: true},
-    author: {type: mongoose.Types.ObjectId, required: true},
-    comment_contents: {type: String, required: false},
-    resource_uri: {type: String, required: false},
-});
-
-const Comment = mongoose.model('comments', CommentSchema);
+const Schemas = require('../schemas')
+const Interaction = mongoose.model('interactions', Schemas.InteractionSchema);
+const Comment = mongoose.model('comments', Schemas.CommentSchema);
 
 // take a hint for mongoose query
 // return array of
