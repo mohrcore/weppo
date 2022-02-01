@@ -22,5 +22,4 @@ for f in ${INITDBDIR}/*; do
     mongoimport ${CONNECTION_STRING} --db ${DBNAME} --collection ${collection} --file ${f}
 done
 
-kill ${MONGOD_PID}
 echo "-----------> PID: ${MONGOD_PID}"

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>interaction view</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <div class = "center">
+      <h1>INTERACTION VIEW</h1>
+    </div>
+    <hr>
+    <div class="center">
+      <% for(var i=0; i < interaction_descriptor.prepared_interactions.length; i++) { %>
+        <div>
+          <p> interaction id <%= interaction_descriptor.prepared_interactions[i]._id %> </p> 
+          <p> interaction timestamp <%= interaction_descriptor.prepared_interactions[i].timestamp %> </p> 
+
+          <div style="width:100%; display: flex">
+            <div style="float:left; width: 50%; background:lightgreen">
+              <p>interaction_client userid: <%= interaction_descriptor.prepared_interactions[i].client_userid %></p>
+
+              <% if(interaction_descriptor.prepared_interactions[i].client_comment_reference != "None") { %>
+                <p>author: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].client_comment_reference].author %></p>
+                <p>posted at: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].client_comment_reference].timestamp %></p>
+                <p>resource uri: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].client_comment_reference].resource_uri %></p>
+                <p>user comment: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].client_comment_reference].content %></p>
+                <% if(interaction_descriptor.prepared_interactions[i].host_response_reference != "None") { %>
+                  <div style="float:right; width: 40%; background:lightsalmon">
+                    <p>author: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].host_response_reference].author %></p>
+                    <p>posted at: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].host_response_reference].timestamp %></p>
+                    <p>resource uri: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].host_response_reference].resource_uri %></p>
+                    <p>host comment: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].host_response_reference].content %></p>    
+                  </div>
+                <% } else { %>
+                  <p></p>              
+                <% } %>
+              <% } else { %>
+                <p></p>              
+              <% } %>
+            </div>
+            <div style="float:right; width: 50%; background:lightsalmon">
+              <p>interaction_host userid: <%= interaction_descriptor.prepared_interactions[i].host_userid %></p>
+
+              <% if(interaction_descriptor.prepared_interactions[i].host_comment_reference != "None") { %>
+                <p>author: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].host_comment_reference].author %></p>
+                <p>posted at: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].host_comment_reference].timestamp %></p>
+                <p>resource uri: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].host_comment_reference].resource_uri %></p>
+                <p>user comment: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].host_comment_reference].content %></p>
+                <% if(interaction_descriptor.prepared_interactions[i].client_response_reference != "None") { %>
+                  <div style="float:right; width: 40%; background:lightgreen">
+                    <p>author: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].client_response_reference].author %></p>
+                    <p>posted at: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].client_response_reference].timestamp %></p>
+                    <p>resource uri: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].client_response_reference].resource_uri %></p>
+                    <p>host comment: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].client_response_reference].content %></p>    
+                  </div>
+                <% } else { %>
+                  <p></p>              
+                <% } %>
+                <% } else { %>
+                <p></p>              
+              <% } %>
+          </div>
+        </div>
+        <div style="width:100%;">
+          <hr style="float:left; width:100%;">
+        </div>
+      <% } %>
+    </div>
+  </body>
+</html>
