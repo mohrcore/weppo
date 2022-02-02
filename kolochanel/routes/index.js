@@ -1,7 +1,8 @@
-var express = require('express');
+const express = require('express');
 const { ObjectId } = require('mongodb');
-var router = express.Router();
-var dbops = require("../dbops")
+const router = express.Router();
+const dbops = require('../dbops');
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -22,12 +23,15 @@ router.post('/login_user', async (req, res, next) => {
   );
 
   if(typeof(login_status) === 'string') {
-    if (login_status == "no_account") {
-      res.render('registration_failed', {
-        error_message: `podane dane logowania nie mogą zostać uznane za poprawne.`,
-        rplace: 'login',
-      });
+    let params = {
+      rplace: 'login',
+      error_message: 'An unknown error has occurred.'
+    };
+    if ((login_status == 'no_account') || (login_status == 'wrong_pwd')) {
+      params.error_message = 
+        'Podany użytkownik nie istnieje, bądź hasło jest nieprawidłowe.';
     }
+    res.render('registration_failed', params);
   } else {
     res.redirect('/');
   }

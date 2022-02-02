@@ -23,7 +23,7 @@ const UserSchema = new mongoose.Schema({
     timestamp: {type: mongoose.Date, required: true},
     username: {type: String, required: true},
     email: {type: String, required: true},
-    password: {type: String, required: true},
+    pwdhash: {type: String, required: true},
 });
 
 exports.InteractionSchema = InteractionSchema;

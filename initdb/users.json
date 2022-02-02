@@ -1,4 +1,4 @@
-{"_id":{"$oid":"61f8877e8aa50a6ce86528f5"},"timestamp":{"$date":"2022-02-01T01:06:06.494Z"},"username":"a","email":"b","password":"c","__v":0}
-{"_id":{"$oid":"61f8888bb463dd4a59e39d90"},"timestamp":{"$date":"2022-02-01T01:10:35.336Z"},"username":"b","email":"c","password":"dupa","__v":0}
-{"_id":{"$oid":"61f897eb21056c90e716a67d"},"timestamp":{"$date":"2022-02-01T02:16:11.756Z"},"username":"test_1","email":"test_1","password":"test_1","__v":0}
-{"_id":{"$oid":"61f8981021056c90e716a687"},"timestamp":{"$date":"2022-02-01T02:16:48.324Z"},"username":"test_2","email":"test_2","password":"test_2","__v":0}
+{"_id":{"$oid":"61f8888bb463dd4a59e39d90"},"timestamp":{"$date":"2022-02-01T01:10:35.336Z"},"username":"b","email":"c","__v":0,"pwdhash":"$2b$10$Oz6PDwtlEVLBd9Hed9ZL0ON8dVA.B.ji7yJT5eECtuUoWiDrxpYjW"}
+{"_id":{"$oid":"61f897eb21056c90e716a67d"},"timestamp":{"$date":"2022-02-01T02:16:11.756Z"},"username":"test_1","email":"test_1","__v":0,"pwdhash":"$2b$10$JA0ewPXHhQYwFSt4g7Boyu5.xUxRtucTtYhrPkx0bDNP1vUqoV/YG"}
+{"_id":{"$oid":"61f8981021056c90e716a687"},"timestamp":{"$date":"2022-02-01T02:16:48.324Z"},"username":"test_2","email":"test_2","__v":0,"pwdhash":"$2b$10$6euLX93gjpWICN.2IymaG.cWgjDZSiJM3/jz/0PI8N1uIZWlChO0m"}
+{"_id":{"$oid":"61f8877e8aa50a6ce86528f5"},"timestamp":{"$date":"2022-02-01T01:06:06.494Z"},"username":"a","email":"b","__v":0,"pwdhash":"$2b$10$1jR.X.C3wWjdANPGR7UasOQdQ5R0xQHpTIXW9NIodjsGOnuivAU96"}
