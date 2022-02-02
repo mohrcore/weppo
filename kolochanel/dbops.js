@@ -42,11 +42,8 @@ async function create_user(username, email, passwd) {
 }
 
 async function login_user(username, passwd) {
-    let hash = await hashPwd(passwd);
-    console.log('HASH (' + username + '): ' + passwd + ' = ' + hash);
     let existing_user = await User.findOne({ username: username });
-
-
+    
     console.log(existing_user)
     if (existing_user == null)
         return 'no_account';
