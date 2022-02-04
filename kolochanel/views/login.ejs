@@ -3,18 +3,45 @@
   <head>
     <title>KOLO CHANEL</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script>
+      function goRegister() {
+        window.location.href = "/register";
+      }
+    </script>
   </head>
   <body>
-    <div class="center">
-      <h1>KOLO CHANEL</h1>
-    </div>
-    
-    <div class="center">
-      <p>Portal anonsów sanitarnych</p>
-    </div>
-  
-    <div class="center">
-      <form action="login_user", method = "POST">
+    <body>
+      <div class="content-box">
+        <div class="content-floating">
+          <h1 style="text-align:center">KOLO CHANEL</h1>
+        </div>
+        <div class="content-floating">
+          <h6 style="text-align:center">Logowanie użytkownika</h6>
+        </div>
+        <form action="login_user", method = "POST">
+          <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">Email address</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+            <label for="floatingPassword">Password</label>
+          </div>
+          <div class="form-floating mb-3">
+            <button type="submit" class="w-100 btn btn-primary">Zaloguj</button>
+          </div>
+        </form>
+        <div class="content-floating">
+          <h6 style="text-align:center">Nie masz konta? Możesz je założyć</h6>
+        </div>
+        <div class="content-floating">
+          <button class="w-100 btn btn-primary" type="button" onclick="goRegister()">Załóż konto</button>
+        </div>
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>  </body>
+    </body>
+    <!--    <div class="center">
         <label for="username_input">Nazwa użytkownika:</label><br>
         <input id="username_input" type="text" name="username"><br>
         <label for="pwd_input">Hasło:</label><br>
@@ -22,6 +49,7 @@
         <input type="submit" value="Loguj">
       </form>
     </div>
-  
+  -->
+
   </body>
 </html>
