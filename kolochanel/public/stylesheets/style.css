@@ -38,7 +38,7 @@ a {
   color: #00B7FF;
 }
 
-.content-box {
+.content-box-constrained {
   width: 100%;
   max-width: 25%;
   padding: 15px;
@@ -47,6 +47,44 @@ a {
   border-radius: 15px;
 }
 
+.content-box {
+  width: 100%;
+  padding: 15px;
+  margin: auto;
+  background-color: lightsteelblue;
+  border-radius: 15px;
+}
+
+.nested_content-box {
+  flex-basis: 100%;
+  width: 100%;
+  padding: 15px;
+  margin: auto;
+  background-color: lightslategrey;
+  border-radius: 15px;
+}
+
+.nested_content_user-box {
+  flex-basis: 100%;
+  padding: 15px;
+  margin: 10px;
+  background-color: lightgreen;
+  border-radius: 15px;
+}
+
+.nested_content_host-box {
+  flex-basis: 100%;
+  padding: 15px;
+  margin: 10px;
+  background-color: lightpink;
+  border-radius: 15px;
+}
+
 .content-box .content-floating:focus-within {
   z-index: 2;
+}
+
+.interaction_header {
+  max-height: 25%;
+  height: auto;
 }
