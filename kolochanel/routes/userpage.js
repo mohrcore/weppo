@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 const { get_userid_from_username, get_userdata, get_toiletdata } = require('../dbops');
-
+const { get_and_squash_interaction_query, get_interactions } = require('./interaction_view')
 mongoose.connect('mongodb://localhost:27017/kolo');
 const Schemas = require('../schemas');
 const Interaction = mongoose.model('interactions', Schemas.InteractionSchema);
@@ -21,6 +21,12 @@ router.get('/username/:username', async(req, res, next) => {
     let t2_ref = await userdata.toiletID_2 ? await get_toiletdata(userdata.toiletID_2) : "None";
     let t3_ref = await userdata.toiletID_3 ? await get_toiletdata(userdata.toiletID_3) : "None";
 
+
+
+    let query_hint = {$or: [{client_userid: user_id}, {host_userid: user_id}]};
+    let inter_query = await get_and_squash_interaction_query(query_hint)
+    inter_query = await get_interactions(inter_query, res)
+    
     pagedata = {
         username: req.params.username,
         user_quote: userdata.user_quote ? userdata.user_quote : "użytkownik nie napisał nic o sobie",
@@ -29,7 +35,9 @@ router.get('/username/:username', async(req, res, next) => {
         t1_ref: t1_ref,
         t2_ref: t2_ref,
         t3_ref: t3_ref,
+        interaction_query: inter_query,
     }
+
     console.log(pagedata)
   
     res.render('user_page', pagedata);

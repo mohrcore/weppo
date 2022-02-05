@@ -104,23 +104,23 @@ async function get_and_squash_user_query(user_mapping) {
   return {user_map: user_map};
 }
 
-async function get_interactions(inter_query, res) {
+async function get_interactions(inter_query) {
   let comm_query = await get_and_squash_comment_query(inter_query.comment_map)
   inter_query.comment_map = comm_query.comment_map;
   let user_query = await get_and_squash_user_query(inter_query.user_map)
   inter_query.user_map = user_query.user_map;
 
   console.log(inter_query); // TODO: odpytaj DB tylko o to co potrzeba.
-  res.render(
-    'interaction_top', 
-    { interaction_descriptor: inter_query }
-  );
-
+  return inter_query
 }
 
 router.get('/', async(req, res, next) => {
   let inter_query = await get_and_squash_interaction_query({})
-  get_interactions(inter_query, res)
+  inter_query = await get_interactions(inter_query)
+  res.render(
+    'interaction_wrapper', 
+    { interaction_descriptor: inter_query }
+  );
 });
 
 /* GET home page. */
@@ -137,7 +137,15 @@ router.get('/username/:username/actor_type/:actor_type', async(req, res, next) =
   }
 
   let inter_query = await get_and_squash_interaction_query({$or: interaction_hint})
-  get_interactions(inter_query, res)
+  console.log(inter_query)
+  inter_query = await get_interactions(inter_query)
+  res.render(
+    'interaction_wrapper', 
+    { interaction_descriptor: inter_query }
+  );
+
 });
 
 module.exports = router;
+module.exports.get_and_squash_interaction_query = get_and_squash_interaction_query;
+module.exports.get_interactions = get_interactions;
