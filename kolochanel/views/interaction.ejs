@@ -1,7 +1,9 @@
 <% if(identity == "client") { %>
   <% var comment_id = interaction.host_comment_reference %> 
   <% var response_id = interaction.client_response_reference %> 
+  <% var interaction_stars = interaction.host_rating_stars %> 
 <% } else { %>
+  <% var interaction_stars = interaction.client_rating_stars %>   
   <% var comment_id = interaction.client_comment_reference %> 
   <% var response_id = interaction.host_response_reference %> 
 <% } %>
@@ -17,7 +19,7 @@
     <div class="d-flex flex-row mb-1" style="position:relative">
       <img class="rounded-circle p-1 img-responsive" src="<%= primary_pfp %>" style="width: 20%; height: 20%">
       <div class="position-absolute badge rounded-pill bg-danger" style="width: 20%; translate: 60% -30%;">
-        <%- include('star_rating.ejs', {rating: 2.5}) %>
+        <%- include('star_rating.ejs', {rating: 3.5}) %>
       </div>
 
       <% if(comment_id != "None") { %>
@@ -27,7 +29,7 @@
       <% } %>
       <!-- interaction rating from client -->
       <div class="badge rounded-pill bg-secondary" style="position:absolute; width: 32%; top:0rem; right:0rem">
-        <%- include('star_rating.ejs', {rating: 3.5}) %>
+        <%- include('star_rating.ejs', {rating: interaction_stars}) %>
       </div>
     </div>
   </div>

@@ -31,6 +31,8 @@ async function get_and_squash_interaction_query(interaction_hint) {
       _id: interaction._id,
       host_userid: interaction.host_userid ? interaction.host_userid : 'None',
       client_userid: interaction.client_userid ? interaction.client_userid : 'None',
+      host_rating_stars: interaction.host_rating_stars ? interaction.host_rating_stars : 'None',
+      client_rating_stars: interaction.client_rating_stars ? interaction.client_rating_stars : 'None',
       client_comment_reference: interaction.client_comment_reference ? interaction.client_comment_reference : 'None',
       host_comment_reference: interaction.host_comment_reference ? interaction.host_comment_reference : 'None',
       timestamp: interaction.timestamp ? prettyfy_timestamp(interaction.timestamp): 'None',
