@@ -1,9 +1,16 @@
 <% if(tref == "None") { %>
 
 <% } else { %>
-    <p class="p-2"><%= tref.toiletname %></p>
+    <h5 class="p-2"><%= tref.toiletname %></h5>
     <div class="d-flex flex-row bd-highlight mb-3" style="flex-wrap:wrap">
-    <img class="p-1 img-responsive" src="/images/pfp_toitoi.jpg" style="width: 30%;">
-    <img class="p-1 img-responsive" src="/images/pfp_toitoi.jpg" style="width: 30%;">
+        <% for(var i=0; i < tref.toiletimages.length; i++) { %>
+            <% if (tref.toiletimages[i] == "add_new") { %>
+                <img class="p-1 img-responsive" src="/images/add_new_box.jpg" style="width: 33%;">
+            <% } else if (tref.toiletimages[i] == "empty") { %>
+                <img class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
+            <% } else { %>
+                <img class="p-1 img-responsive" src="<%= tref.toiletimages[i] %>" style="width: 33%;">
+            <% } %>
+        <% } %>
     </div>
 <% } %>

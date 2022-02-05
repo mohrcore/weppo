@@ -13,6 +13,27 @@ router.get('/', async(req, res, next) => {
     res.render('user_page', {});
 });
 
+function massage_shitterimages(toilet_ref) {
+    built_toiletmap = []
+    for(let i in ["1", "2", "3", "4", "5", "6"]) {
+        let t = "toiletimage_uri_" + i;
+        if (toilet_ref[t])
+            built_toiletmap.push(toilet_ref[t])
+    }
+
+    if(built_toiletmap.length < 6)
+        built_toiletmap.push("add_new")
+
+
+    while(built_toiletmap.length < 6)
+        built_toiletmap.push("empty")
+
+    return {
+        toiletname: toilet_ref.toiletname,
+        toiletimages: built_toiletmap
+    }
+}
+
 /* GET home page. */
 router.get('/username/:username', async(req, res, next) => {
     let user_id = await get_userid_from_username(req.params.username);
@@ -32,9 +53,9 @@ router.get('/username/:username', async(req, res, next) => {
         user_quote: userdata.user_quote ? userdata.user_quote : "użytkownik nie napisał nic o sobie",
         user_long_description: userdata.user_long_description ? userdata.user_long_description : "",
         pfp_uri: userdata.pfp_uri,
-        t1_ref: t1_ref,
-        t2_ref: t2_ref,
-        t3_ref: t3_ref,
+        t1_ref: massage_shitterimages(t1_ref),
+        t2_ref: massage_shitterimages(t2_ref),
+        t3_ref: massage_shitterimages(t3_ref),
         interaction_query: inter_query,
     }
 
