@@ -2,11 +2,20 @@ const express = require('express');
 const { ObjectId } = require('mongodb');
 const router = express.Router();
 const dbops = require('../dbops');
-
+const localauth = require('../localauth');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index');
+  let t = {
+    login_status: 'Not logged-in'
+  };
+
+  if (req.user != undefined)
+    t.login_status = 'Logged-in as ' + req.user.username;
+
+  console.log(req.user);
+
+  res.render('index', t);
 });
 
 router.get('/register', function(req, res) {
@@ -18,29 +27,32 @@ router.get('/login', function(req, res) {
 });
 
 router.post('/login_user', async (req, res, next) => {
-  let login_status = await dbops.login_user(
-    req.body.username, req.body.pwd
-  );
+  let params = {
+    rplace: 'login',
+    error_message: 'An unknown error has occurred.'
+  };
 
-  if(typeof(login_status) === 'string') {
-    let params = {
-      rplace: 'login',
-      error_message: 'An unknown error has occurred.'
-    };
-    if ((login_status == 'no_account') || (login_status == 'wrong_pwd')) {
+  await localauth.passport.authenticate('local', function(err, user, info) {
+    if (err) { return next(err) }
+    if (!user) {
       params.error_message = 
         'Podany użytkownik nie istnieje, bądź hasło jest nieprawidłowe.';
+      res.render('registration_failed', params);
     }
-    res.render('registration_failed', params);
-  } else {
-    res.redirect('/');
-  }
+    req.logIn(user, (err) => {
+      if (err) {
+        console.log('Error', err);
+        return next(err);
+      }
+      res.redirect('/');
+    });
+  })(req, res, next);
 });
 
 router.post('/register_user', async (req, res, next) => {
   console.log(req.body)
   let registration_status = await dbops.create_user(
-    req.body.username, req.body.email, req.body.pwd
+    req.body.username, req.body.email, req.body.password
   );
 
   console.log(typeof(registration_status))

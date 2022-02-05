@@ -57,5 +57,10 @@ async function login_user(username, passwd) {
   return existing_user._id;
 }
 
+async function getUserById(id) {
+  return await User.findById(id);
+}
+
 exports.create_user = create_user;
 exports.login_user = login_user;
+exports.getUserById = getUserById;
