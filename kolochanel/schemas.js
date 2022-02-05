@@ -24,6 +24,7 @@ const UserSchema = new mongoose.Schema({
     username: {type: String, required: true},
     email: {type: String, required: true},
     pwdhash: {type: String, required: true},
+    pfp_uri: {type: String, required: false}
 });
 
 exports.InteractionSchema = InteractionSchema;

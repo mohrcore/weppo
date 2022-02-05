@@ -1,4 +1,4 @@
-<% if(identity == "host") { %>
+<% if(identity == "client") { %>
   <% var comment_id = interaction.host_comment_reference %> 
   <% var response_id = interaction.client_response_reference %> 
 <% } else { %>
@@ -6,13 +6,20 @@
   <% var response_id = interaction.host_response_reference %> 
 <% } %>
 
+<% var primary_username = user_map[primary_userid].username %> 
+<% var responder_username = user_map[responder_userid].username %> 
+<% var primary_pfp = user_map[primary_userid].pfp_uri %> 
+<% var responder_pfp = user_map[responder_userid].pfp_uri %> 
+
 <div class="d-flex flex-column bd-highlight mb-3">
   <!-- profile picture and metadata -->
   <div class="p-2 bd-highlight">
     <div class="d-flex flex-row bd-highlight mb-3">
-      <img class="p-2 bd-highlight img-responsive" src="/images/test_pfp.jpg" style="max-width: 15%;">
+      <img class="rounded-circle p-2 bd-highlight img-responsive" src="<%= primary_pfp %>" style="max-width: 15%;">
       <div class="position-relative translate-middle badge rounded-pill bg-secondary" style="height: 10%;">⭐⭐⭐⭐⭐</div>
-      <p class="p-2 bd-highlight" style="width: 100%; align-self: end;">Użytkownik <%= primary_username %> skomentował:</p>
+      <p class="p-2 bd-highlight" style="width: 100%; align-self: end; position:relative; left:-12%; top:20%">
+        <%= identity %> Użytkownik <%= primary_username %> skomentował o  <%= comment_map[comment_id].timestamp %> :
+      </p>
     </div>
   </div>
 
@@ -28,8 +35,14 @@
     <% } else { %>
       <div class="nested_content_host-box">  
     <% } %>
-    <p>Użytkownik <%= responder_username %> odpowiedział:</p>
-    <%= comment_map[response_id].content %>
+      <div class="d-flex flex-row bd-highlight mb-3">
+        <img class="rounded-circle p-2 bd-highlight img-responsive" src="<%= responder_pfp %>" style="max-width: 15%;">
+        <div class="position-relative translate-middle badge rounded-pill bg-secondary" style="height: 10%;">⭐⭐⭐⭐⭐</div>
+        <p class="p-2 bd-highlight" style="width: 100%; align-self: end; position:relative; left:-12%; top:20%">
+          Użytkownik <%= responder_username %> skomentował o  <%= comment_map[response_id].timestamp %> :
+        </p>
+      </div>
+      <%= comment_map[response_id].content %>
     </div>
   <% } %>
 </div>

@@ -28,10 +28,10 @@
           <h6> <%= username_client %> odwiedził <%= username_host %> o <%= interaction_timestamp %></h6>
           <div class="d-flex flex-row bd-highlight mb-3">
             <div class="p-2 nested_content_host-box">
-              <%- include('interaction.ejs', {interaction: interaction, comment_map: interaction_descriptor.comment_map, identity: "host", primary_username: username_client, responder_username: username_host}); %>
+              <%- include('interaction.ejs', {interaction: interaction, user_map: interaction_descriptor.user_map, comment_map: interaction_descriptor.comment_map, identity: "host", primary_userid: interaction.client_userid, responder_userid: interaction.host_userid}); %>
             </div>
             <div class="p-2 nested_content_user-box">
-              <%- include('interaction.ejs', {interaction: interaction, comment_map: interaction_descriptor.comment_map, identity: "client", primary_username: username_host, responder_username: username_client}); %>
+              <%- include('interaction.ejs', {interaction: interaction, user_map: interaction_descriptor.user_map, comment_map: interaction_descriptor.comment_map, identity: "client", primary_userid: interaction.host_userid, responder_userid: interaction.client_userid}); %>
             </div>
           </div>
         </div>
