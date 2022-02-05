@@ -57,5 +57,11 @@ async function login_user(username, passwd) {
   return existing_user._id;
 }
 
+async function get_userid_from_username(username) {
+  let user = await User.findOne({ username: username });
+  return user._id;
+}
+
 exports.create_user = create_user;
 exports.login_user = login_user;
+exports.get_userid_from_username = get_userid_from_username;

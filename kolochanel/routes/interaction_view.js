@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
+const { get_userid_from_username } = require('../dbops');
 
 mongoose.connect('mongodb://localhost:27017/kolo');
 const Schemas = require('../schemas');
@@ -95,19 +96,40 @@ async function get_and_squash_user_query(user_mapping) {
   return {user_map: user_map};
 }
 
-/* GET home page. */
-router.get('/', async(req, res, next) => {
-    let inter_query = await get_and_squash_interaction_query({})
-    let comm_query = await get_and_squash_comment_query(inter_query.comment_map);
-    inter_query.comment_map = comm_query.comment_map;
-    let user_query = await get_and_squash_user_query(inter_query.user_map)
-    inter_query.user_map = user_query.user_map;
+async function get_interactions(inter_query, res) {
+  let comm_query = await get_and_squash_comment_query(inter_query.comment_map)
+  inter_query.comment_map = comm_query.comment_map;
+  let user_query = await get_and_squash_user_query(inter_query.user_map)
+  inter_query.user_map = user_query.user_map;
 
-    console.log(inter_query); // TODO: odpytaj DB tylko o to co potrzeba.
-    res.render(
-      'interaction_top', 
-      { interaction_descriptor: inter_query }
-    );
+  console.log(inter_query); // TODO: odpytaj DB tylko o to co potrzeba.
+  res.render(
+    'interaction_top', 
+    { interaction_descriptor: inter_query }
+  );
+
+}
+
+router.get('/', async(req, res, next) => {
+  let inter_query = await get_and_squash_interaction_query({})
+  get_interactions(inter_query, res)
+});
+
+/* GET home page. */
+router.get('/username/:username/actor_type/:actor_type', async(req, res, next) => {
+  let user_id = await get_userid_from_username(req.params.username);
+  interaction_hint = []
+
+  if (req.params.actor_type == "both" || req.params.actor_type == "client") {
+    interaction_hint.push({client_userid: user_id})
+  }
+
+  if (req.params.actor_type == "both" || req.params.actor_type == "host") {
+    interaction_hint.push({host_userid: user_id})    
+  }
+
+  let inter_query = await get_and_squash_interaction_query({$or: interaction_hint})
+  get_interactions(inter_query, res)
 });
 
 module.exports = router;
