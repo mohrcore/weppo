@@ -62,6 +62,12 @@ async function get_userid_from_username(username) {
   return user._id;
 }
 
+async function get_userdata(userid) {
+  let user = await User.findOne({_id: userid})
+  return user
+}
+
 exports.create_user = create_user;
 exports.login_user = login_user;
 exports.get_userid_from_username = get_userid_from_username;
+exports.get_userdata = get_userdata;

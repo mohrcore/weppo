@@ -46,6 +46,14 @@ a {
   background-color: lightsteelblue;
   border-radius: 15px;
 }
+.content-box-profile {
+  width: 100%;
+  max-width: 75%;
+  padding: 15px;
+  margin: auto;
+  background-color: lightsteelblue;
+  border-radius: 15px;
+}
 
 .content-box {
   width: 100%;

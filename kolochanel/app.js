@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var interactionRouter = require('./routes/interaction_view');
+var userpageRouter = require('./routes/userpage');
 
 
 var app = express();
@@ -27,6 +28,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/interactions', interactionRouter);
+app.use('/userpage', userpageRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
