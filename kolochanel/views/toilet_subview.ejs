@@ -1,3 +1,19 @@
+<script>
+    function openDialog_1() {
+        document.getElementById("submitfield_1").click();
+    }
+    function openDialog_2() {
+        document.getElementById("submitfield_2").click();
+    }
+    function openDialog_3() {
+        document.getElementById("submitfield_3").click();
+    }
+
+    document.getElementById("submitbutton_1").addEventListener('click', openDialog_1);
+    document.getElementById("submitbutton_2").addEventListener('click', openDialog_2);
+    document.getElementById("submitbutton_3").addEventListener('click', openDialog_3);
+</script>
+
 <% if(tref == "None") { %>
 
 <% } else { %>
@@ -5,12 +21,20 @@
     <div class="d-flex flex-row bd-highlight mb-3" style="flex-wrap:wrap">
         <% for(var i=0; i < tref.toiletimages.length; i++) { %>
             <% if (tref.toiletimages[i] == "add_new") { %>
-                <img class="p-1 img-responsive" src="/images/add_new_box.jpg" style="width: 33%;">
+                <% if (interactive_page == true) { %>
+                    <img class="p-1 img-responsive" src="/images/add_new_box.jpg" onclick="openDialog()" style="width: 33%;" id="submitbutton_<%=imgroup%>">
+
+                    <form action="/userpage/addimage/username/<%= username %>/toiletgroup/<%= imgroup %>" method="post" enctype="multipart/form-data">
+                        <input type="file" name="toiletimage" id="submitfield_<%=imgroup%>" onchange="this.form.submit();" hidden/>
+                    </form>
+                <% } else { %>
+                    <img class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
+                <% } %>
             <% } else if (tref.toiletimages[i] == "empty") { %>
                 <img class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
             <% } else { %>
                 <img class="p-1 img-responsive" src="<%= tref.toiletimages[i] %>" style="width: 33%;">
-            <% } %>
+                <% } %>
         <% } %>
     </div>
 <% } %>

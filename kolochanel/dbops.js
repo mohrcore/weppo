@@ -74,8 +74,23 @@ async function get_toiletdata(toiletid) {
   return toilet
 }
 
+async function add_toiletimage(toiletdata, final_fname) {
+  let toilet = await Toilet.findById(toiletdata)
+
+  for(let i of ["1", "2", "3", "4", "5", "6"]) {
+    let t = "toiletimage_uri_" + i;
+    console.log(toilet[t])
+    if (!toilet[t]) {
+      toilet[t] = final_fname;
+      await Toilet.findByIdAndUpdate(toiletdata, toilet)
+      break
+    }
+  }
+}
+
 exports.create_user = create_user;
 exports.login_user = login_user;
 exports.get_userid_from_username = get_userid_from_username;
 exports.get_userdata = get_userdata;
 exports.get_toiletdata = get_toiletdata;
+exports.add_toiletimage = add_toiletimage;
