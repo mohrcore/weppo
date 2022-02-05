@@ -11,23 +11,25 @@
   <div class="p-2 bd-highlight">
     <div class="d-flex flex-row bd-highlight mb-3">
       <img class="p-2 bd-highlight img-responsive" src="/images/test_pfp.jpg" style="max-width: 15%;">
-      <p class="p-2 bd-highlight" style="width: 100%">Użytkownik [user login] skomentował:</p>
+      <div class="position-relative translate-middle badge rounded-pill bg-secondary" style="height: 10%;">⭐⭐⭐⭐⭐</div>
+      <p class="p-2 bd-highlight" style="width: 100%; align-self: end;">Użytkownik <%= primary_username %> skomentował:</p>
     </div>
   </div>
 
+  <!-- comment body -->
   <% if(comment_id != "None") { %>
     <div class="p-2 bd-highlight">
       <%= comment_map[comment_id].content %> 
     </div>
-    
+
+    <!-- response body -->
     <% if(identity == "host") { %>
       <div class="nested_content_user-box">
     <% } else { %>
       <div class="nested_content_host-box">  
     <% } %>
-    <p>Użytkownik [username] odpowiedział:</p>
+    <p>Użytkownik <%= responder_username %> odpowiedział:</p>
     <%= comment_map[response_id].content %>
     </div>
-
   <% } %>
 </div>
