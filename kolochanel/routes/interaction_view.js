@@ -15,7 +15,6 @@ const User = mongoose.model('users', Schemas.UserSchema)
 async function get_and_squash_interaction_query(interaction_hint) {
   let p_interactions = [];
   let required_comments = {};
-  let required_responses = {};
   let required_users = {};
 
   let rinteractions = await Interaction.find(interaction_hint);
@@ -56,7 +55,6 @@ async function get_and_squash_interaction_query(interaction_hint) {
   return {
     prepared_interactions: p_interactions,
     comment_map: required_comments,
-    response_map: required_responses,
     user_map: required_users,
   };
 }

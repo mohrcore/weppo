@@ -26,23 +26,40 @@
   <!-- comment body -->
   <% if(comment_id != "None") { %>
     <div class="p-2 bd-highlight">
+      <% if(comment_map[comment_id].resource_uri == 'None' && comment_map[comment_id].content == 'None') { %>
+        <p>wtf?</p>
       <%= comment_map[comment_id].content %> 
+      <% } else if(comment_map[comment_id].resource_uri != 'None' && comment_map[comment_id].content == 'None') { %>
+        </p><%= comment_map[comment_id].resource_uri %></p>
+      <% } else if(comment_map[comment_id].resource_uri == 'None' && comment_map[comment_id].content != 'None') { %>
+        <p><%= comment_map[comment_id].content %></p>
+      <% } else if(comment_map[comment_id].resource_uri != 'None' && comment_map[comment_id].content != 'None') { %>
+        <div class="d-flex flex-row bd-highlight mb-3">
+          <p class="p-2 bd-highlight"><%= comment_map[comment_id].content %> </p>    
+          <img class="p-2 bd-highlight img-responsive" src="<%= comment_map[comment_id].resource_uri %>" style="max-width: 30%;">
+        </div>
+      <% } else { %>
+        <p>wtf></p>
+      <% } %>
     </div>
 
-    <!-- response body -->
-    <% if(identity == "host") { %>
-      <div class="nested_content_user-box">
-    <% } else { %>
-      <div class="nested_content_host-box">  
-    <% } %>
-      <div class="d-flex flex-row bd-highlight mb-3">
-        <img class="rounded-circle p-2 bd-highlight img-responsive" src="<%= responder_pfp %>" style="max-width: 15%;">
-        <div class="position-relative translate-middle badge rounded-pill bg-secondary" style="height: 10%;">⭐⭐⭐⭐⭐</div>
-        <p class="p-2 bd-highlight" style="width: 100%; align-self: end; position:relative; left:-12%; top:20%">
-          Użytkownik <%= responder_username %> skomentował o  <%= comment_map[response_id].timestamp %> :
-        </p>
+    <% if(response_id != "None") { %>
+      <!-- response body -->
+      <% if(identity == "host") { %>
+        <div class="nested_content_user-box">
+      <% } else { %>
+        <div class="nested_content_host-box">  
+      <% } %>
+        <div class="d-flex flex-row bd-highlight mb-3">
+          <img class="rounded-circle p-2 bd-highlight img-responsive" src="<%= responder_pfp %>" style="max-width: 15%;">
+          <div class="position-relative translate-middle badge rounded-pill bg-secondary" style="height: 10%;">⭐⭐⭐⭐⭐</div>
+          <p class="p-2 bd-highlight" style="width: 100%; align-self: end; position:relative; left:-12%; top:20%">
+            Użytkownik <%= responder_username %> skomentował o  <%= comment_map[response_id].timestamp %> :
+          </p>
+        </div>
+        <%= comment_map[response_id].content %>
       </div>
-      <%= comment_map[response_id].content %>
-    </div>
+    <% } %>
   <% } %>
+
 </div>
