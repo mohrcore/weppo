@@ -13,6 +13,12 @@ const User = mongoose.model('users', Schemas.UserSchema)
 // - interactions - interactions list (objects same as InteractionSchema)
 // - required_comments - dictionary from comment id to none (to be fetched later)
 // - required_responses - dictionary from response id to none (to be fetched later)
+
+function prettyfy_timestamp(timestamp) {
+  let d = timestamp.toISOString().split('T');
+  return d[0] + ' o ' + d[1].slice(0, -1).split('.')[0]; 
+}
+
 async function get_and_squash_interaction_query(interaction_hint) {
   let p_interactions = [];
   let required_comments = {};
@@ -27,7 +33,7 @@ async function get_and_squash_interaction_query(interaction_hint) {
       client_userid: interaction.client_userid ? interaction.client_userid : 'None',
       client_comment_reference: interaction.client_comment_reference ? interaction.client_comment_reference : 'None',
       host_comment_reference: interaction.host_comment_reference ? interaction.host_comment_reference : 'None',
-      timestamp: interaction.timestamp ? interaction.timestamp: 'None',
+      timestamp: interaction.timestamp ? prettyfy_timestamp(interaction.timestamp): 'None',
       client_userid: interaction.client_userid ? interaction.client_userid : 'None',
       host_userid: interaction.host_userid ? interaction.host_userid : 'None',
       host_response_reference: interaction.host_response_reference ? interaction.host_response_reference : 'None',
@@ -71,7 +77,7 @@ async function get_and_squash_comment_query(comment_mapping) {
     commentmap[c._id] = {
       content: c.comment_contents ? c.comment_contents : 'None',
       author: c.author ? c.author : 'None',
-      timestamp: c.timestamp ? c.timestamp: 'None',
+      timestamp: c.timestamp ? prettyfy_timestamp(c.timestamp): 'None',
       resource_uri: c.resource_uri ? c.resource_uri : 'None',
     };
   }
