@@ -38,6 +38,7 @@ router.post('/login_user', async (req, res, next) => {
 });
 
 router.post('/register_user', async (req, res, next) => {
+  console.log(req.body)
   let registration_status = await dbops.create_user(
     req.body.username, req.body.email, req.body.pwd
   );

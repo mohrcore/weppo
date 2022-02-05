@@ -1,70 +1,33 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>interaction view</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <div class = "center">
-      <h1>INTERACTION VIEW</h1>
+<% if(identity == "host") { %>
+  <% var comment_id = interaction.host_comment_reference %> 
+  <% var response_id = interaction.client_response_reference %> 
+<% } else { %>
+  <% var comment_id = interaction.client_comment_reference %> 
+  <% var response_id = interaction.host_response_reference %> 
+<% } %>
+
+<div class="d-flex flex-column bd-highlight mb-3">
+  <!-- profile picture and metadata -->
+  <div class="p-2 bd-highlight">
+    <div class="d-flex flex-row bd-highlight mb-3">
+      <img class="p-2 bd-highlight img-responsive" src="/images/test_pfp.jpg" style="max-width: 15%;">
+      <p class="p-2 bd-highlight" style="width: 100%">Użytkownik [user login] skomentował:</p>
     </div>
-    <hr>
-    <div class="center">
-      <% for(var i=0; i < interaction_descriptor.prepared_interactions.length; i++) { %>
-        <div>
-          <p> interaction id <%= interaction_descriptor.prepared_interactions[i]._id %> </p> 
-          <p> interaction timestamp <%= interaction_descriptor.prepared_interactions[i].timestamp %> </p> 
+  </div>
 
-          <div style="width:100%; display: flex">
-            <div style="float:left; width: 50%; background:lightgreen">
-              <p>interaction_client userid: <%= interaction_descriptor.prepared_interactions[i].client_userid %></p>
-
-              <% if(interaction_descriptor.prepared_interactions[i].client_comment_reference != "None") { %>
-                <p>author: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].client_comment_reference].author %></p>
-                <p>posted at: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].client_comment_reference].timestamp %></p>
-                <p>resource uri: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].client_comment_reference].resource_uri %></p>
-                <p>user comment: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].client_comment_reference].content %></p>
-                <% if(interaction_descriptor.prepared_interactions[i].host_response_reference != "None") { %>
-                  <div style="float:right; width: 40%; background:lightsalmon">
-                    <p>author: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].host_response_reference].author %></p>
-                    <p>posted at: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].host_response_reference].timestamp %></p>
-                    <p>resource uri: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].host_response_reference].resource_uri %></p>
-                    <p>host comment: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].host_response_reference].content %></p>    
-                  </div>
-                <% } else { %>
-                  <p></p>              
-                <% } %>
-              <% } else { %>
-                <p></p>              
-              <% } %>
-            </div>
-            <div style="float:right; width: 50%; background:lightsalmon">
-              <p>interaction_host userid: <%= interaction_descriptor.prepared_interactions[i].host_userid %></p>
-
-              <% if(interaction_descriptor.prepared_interactions[i].host_comment_reference != "None") { %>
-                <p>author: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].host_comment_reference].author %></p>
-                <p>posted at: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].host_comment_reference].timestamp %></p>
-                <p>resource uri: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].host_comment_reference].resource_uri %></p>
-                <p>user comment: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].host_comment_reference].content %></p>
-                <% if(interaction_descriptor.prepared_interactions[i].client_response_reference != "None") { %>
-                  <div style="float:right; width: 40%; background:lightgreen">
-                    <p>author: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].client_response_reference].author %></p>
-                    <p>posted at: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].client_response_reference].timestamp %></p>
-                    <p>resource uri: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].client_response_reference].resource_uri %></p>
-                    <p>host comment: <%= interaction_descriptor.comment_map[interaction_descriptor.prepared_interactions[i].client_response_reference].content %></p>    
-                  </div>
-                <% } else { %>
-                  <p></p>              
-                <% } %>
-                <% } else { %>
-                <p></p>              
-              <% } %>
-          </div>
-        </div>
-        <div style="width:100%;">
-          <hr style="float:left; width:100%;">
-        </div>
-      <% } %>
+  <% if(comment_id != "None") { %>
+    <div class="p-2 bd-highlight">
+      <%= comment_map[comment_id].content %> 
     </div>
-  </body>
-</html>
+    
+    <% if(identity == "host") { %>
+      <div class="nested_content_user-box">
+    <% } else { %>
+      <div class="nested_content_host-box">  
+    <% } %>
+    <p>Użytkownik [username] odpowiedział:</p>
+    <%= comment_map[response_id].content %>
+    </div>
+
+  <% } %>
+</div>

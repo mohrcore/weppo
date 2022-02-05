@@ -79,7 +79,7 @@ router.get('/', async(req, res, next) => {
 
     console.log(inter_query); // TODO: odpytaj DB tylko o to co potrzeba.
     res.render(
-      'interaction', 
+      'interaction_top', 
       { interaction_descriptor: inter_query }
     );
 });
