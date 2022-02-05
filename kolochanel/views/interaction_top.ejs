@@ -21,14 +21,17 @@
     <% for(var i=0; i < interaction_descriptor.prepared_interactions.length; i++) { %>
       <div class="d-flex flex-column bd-highlight mb-3">
         <div class="p-2 nested_content-box">
-          <h6>Użytkownik [user1] odwiedził użytkownika [user2] o [timestamp]</h6>
+          <% var interaction = interaction_descriptor.prepared_interactions[i]; %>
+          <% var username_client = interaction_descriptor.user_map[interaction.client_userid].username; %>
+          <% var username_host = interaction_descriptor.user_map[interaction.host_userid].username; %>
+          <% var interaction_timestamp = interaction.timestamp; %>
+          <h6> <%= username_client %> odwiedził <%= username_host %> <%= interaction_timestamp %></h6>
           <div class="d-flex flex-row bd-highlight mb-3">
-            <% var interaction=interaction_descriptor.prepared_interactions[i];%>
             <div class="p-2 nested_content_host-box">
-              <%- include('interaction.ejs', {interaction: interaction, comment_map: interaction_descriptor.comment_map, identity: "host"}); %>
+              <%- include('interaction.ejs', {interaction: interaction, user_map: interaction_descriptor.user_map, comment_map: interaction_descriptor.comment_map, identity: "host", primary_userid: interaction.client_userid, responder_userid: interaction.host_userid}); %>
             </div>
             <div class="p-2 nested_content_user-box">
-              <%- include('interaction.ejs', {interaction: interaction, comment_map: interaction_descriptor.comment_map, identity: "client"}); %>
+              <%- include('interaction.ejs', {interaction: interaction, user_map: interaction_descriptor.user_map, comment_map: interaction_descriptor.comment_map, identity: "client", primary_userid: interaction.host_userid, responder_userid: interaction.client_userid}); %>
             </div>
           </div>
         </div>

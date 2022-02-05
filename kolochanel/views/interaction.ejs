@@ -1,33 +1,93 @@
-<% if(identity == "host") { %>
+<% if(identity == "client") { %>
   <% var comment_id = interaction.host_comment_reference %> 
   <% var response_id = interaction.client_response_reference %> 
+  <% var interaction_stars = interaction.host_rating_stars %> 
 <% } else { %>
+  <% var interaction_stars = interaction.client_rating_stars %>   
   <% var comment_id = interaction.client_comment_reference %> 
   <% var response_id = interaction.host_response_reference %> 
 <% } %>
 
-<div class="d-flex flex-column bd-highlight mb-3">
+<% var primary_username = user_map[primary_userid].username %> 
+<% var responder_username = user_map[responder_userid].username %> 
+<% var primary_pfp = user_map[primary_userid].pfp_uri %> 
+<% var responder_pfp = user_map[responder_userid].pfp_uri %> 
+
+<div class="d-flex flex-column mb-3">
   <!-- profile picture and metadata -->
-  <div class="p-2 bd-highlight">
-    <div class="d-flex flex-row bd-highlight mb-3">
-      <img class="p-2 bd-highlight img-responsive" src="/images/test_pfp.jpg" style="max-width: 15%;">
-      <p class="p-2 bd-highlight" style="width: 100%">Użytkownik [user login] skomentował:</p>
+  <div class="p-2">
+    <div class="d-flex flex-row mb-1" style="position:relative">
+      <img class="rounded-circle p-1 img-responsive" src="<%= primary_pfp %>" style="width: 20%; height: 20%">
+      <div class="position-absolute badge rounded-pill bg-danger" style="width: 20%; translate: 60% -30%;">
+        <%- include('star_rating.ejs', {rating: 3.5}) %>
+      </div>
+
+      <% if(comment_id != "None") { %>
+      <p class="p-1" style="flex-shrink: 100; align-self:flex-end;">
+        <%= primary_username %> skomentował <%= comment_map[comment_id].timestamp %>:
+      </p>
+      <% } %>
+      <!-- interaction rating from client -->
+      <div class="badge rounded-pill bg-secondary" style="position:absolute; width: 32%; top:0rem; right:0rem">
+        <%- include('star_rating.ejs', {rating: interaction_stars}) %>
+      </div>
     </div>
   </div>
 
   <% if(comment_id != "None") { %>
+
+  <!-- comment body -->
     <div class="p-2 bd-highlight">
+      <% if(comment_map[comment_id].resource_uri == 'None' && comment_map[comment_id].content == 'None') { %>
+        <p>wtf?</p>
       <%= comment_map[comment_id].content %> 
-    </div>
-    
-    <% if(identity == "host") { %>
-      <div class="nested_content_user-box">
-    <% } else { %>
-      <div class="nested_content_host-box">  
-    <% } %>
-    <p>Użytkownik [username] odpowiedział:</p>
-    <%= comment_map[response_id].content %>
+      <% } else if(comment_map[comment_id].resource_uri != 'None' && comment_map[comment_id].content == 'None') { %>
+        </p><%= comment_map[comment_id].resource_uri %></p>
+      <% } else if(comment_map[comment_id].resource_uri == 'None' && comment_map[comment_id].content != 'None') { %>
+        <p><%= comment_map[comment_id].content %></p>
+      <% } else if(comment_map[comment_id].resource_uri != 'None' && comment_map[comment_id].content != 'None') { %>
+        <div class="d-flex flex-row bd-highlight mb-3">
+          <p class="p-2 bd-highlight"><%= comment_map[comment_id].content %> </p>    
+          <img class="p-2 bd-highlight img-responsive" src="<%= comment_map[comment_id].resource_uri %>" style="max-width: 30%;">
+        </div>
+      <% } else { %>
+        <p>wtf></p>
+      <% } %>
     </div>
 
+    <% if(response_id != "None") { %>
+      <!-- response body -->
+      <% if(identity == "host") { %>
+        <div class="nested_content_user-box">
+      <% } else { %>
+        <div class="nested_content_host-box">  
+      <% } %>
+      <div class="d-flex flex-row mb-1" style="position:relative">
+        <img class="rounded-circle p-1 img-responsive" src="<%= responder_pfp %>" style="width: 20%; height: 20%">
+        <div class="position-absolute badge rounded-pill bg-danger" style="width: 20%; translate: 60% -30%;">
+          <%- include('star_rating.ejs', {rating: 1.5}) %>
+          </div>
+          <p class="p-1" style="flex-shrink: 100; align-self:flex-end;">
+            <%= responder_username %> skomentował o  <%= comment_map[response_id].timestamp %> :
+          </p>
+        </div>
+        <div class="p-2 bd-highlight">
+          <% if(comment_map[response_id].resource_uri == 'None' && comment_map[response_id].content == 'None') { %>
+            <p>wtf?</p>
+          <%= comment_map[response_id].content %> 
+          <% } else if(comment_map[response_id].resource_uri != 'None' && comment_map[response_id].content == 'None') { %>
+            </p><%= comment_map[response_id].resource_uri %></p>
+          <% } else if(comment_map[response_id].resource_uri == 'None' && comment_map[response_id].content != 'None') { %>
+            <p><%= comment_map[response_id].content %></p>
+          <% } else if(comment_map[response_id].resource_uri != 'None' && comment_map[response_id].content != 'None') { %>
+            <div class="d-flex flex-row bd-highlight mb-3">
+              <img class="p-2 bd-highlight img-responsive" src="<%= comment_map[response_id].resource_uri %>" style="max-width: 30%;">
+              <p class="p-2 bd-highlight"><%= comment_map[response_id].content %> </p>    
+            </div>
+          <% } else { %>
+            <p>wtf></p>
+          <% } %>
+          </div>
+          </div>
+    <% } %>
   <% } %>
-</div>
