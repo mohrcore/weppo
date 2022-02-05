@@ -29,29 +29,13 @@
         <h2 class="p-2">PRZEGLĄD ARMATURY</h2>
         <div class="p-2 d-flex flex-row bd-highlight mb-3">
           <div class="p-2 nested_content_host-box">
-            <p class="p-2">mój główny kibel</p>
-            <div class="d-flex flex-row bd-highlight mb-3" style="flex-wrap:wrap">
-              <img class="p-1 img-responsive" src="/images/pfp_toitoi.jpg" style="width: 30%;">
-              <img class="p-1 img-responsive" src="/images/pfp_toitoi.jpg" style="width: 30%;">
-            </div>
+            <%- include('toilet_subview.ejs', {tref: t1_ref}) %>
           </div>
           <div class="p-2 nested_content_host-box">
-            <p class="p-2">mój inny kibel</p>
-            <div class="d-flex flex-row bd-highlight mb-3" style="flex-wrap:wrap">
-              <img class="p-1 img-responsive" src="/images/pfp_toitoi.jpg" style="width: 30%;">
-              <img class="p-1 img-responsive" src="/images/pfp_toitoi.jpg" style="width: 30%;">
-              <img class="p-1 img-responsive" src="/images/pfp_toitoi.jpg" style="width: 30%;">
-              <img class="p-1 img-responsive" src="/images/pfp_toitoi.jpg" style="width: 30%;">
-            </div>
+            <%- include('toilet_subview.ejs', {tref: t2_ref}) %>
           </div>
           <div class="p-2 nested_content_host-box">
-            <p class="p-2">mój ostatni kibel</p>
-            <img class="p-1 img-responsive" src="/images/pfp_toitoi.jpg" style="width: 30%;">
-            <img class="p-1 img-responsive" src="/images/pfp_toitoi.jpg" style="width: 30%;">
-            <img class="p-1 img-responsive" src="/images/pfp_toitoi.jpg" style="width: 30%;">
-            <img class="p-1 img-responsive" src="/images/pfp_toitoi.jpg" style="width: 30%;">
-            <img class="p-1 img-responsive" src="/images/pfp_toitoi.jpg" style="width: 30%;">
-            <img class="p-1 img-responsive" src="/images/pfp_toitoi.jpg" style="width: 30%;">
+            <%- include('toilet_subview.ejs', {tref: t3_ref}) %>
           </div>
         </div>
         <h2 class="p-2">PRZEGLĄD KOMENTARZY</h2>

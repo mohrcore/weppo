@@ -27,8 +27,23 @@ const UserSchema = new mongoose.Schema({
     pfp_uri: {type: String, required: false},
     user_quote: {type: String, required: false},
     user_long_description: {type: String, required: false},
+    toiletID_1: {type: mongoose.Types.ObjectId, required: false},
+    toiletID_2: {type: mongoose.Types.ObjectId, required: false},
+    toiletID_3: {type: mongoose.Types.ObjectId, required: false},
+});
+
+const ToiletSchema = new mongoose.Schema({
+    timestamp: {type: mongoose.Date, required: true},
+    toiletname: {type: String, required: true},
+    toiletimage_uri_1: {type: String, required: false},
+    toiletimage_uri_2: {type: String, required: false},
+    toiletimage_uri_3: {type: String, required: false},
+    toiletimage_uri_4: {type: String, required: false},
+    toiletimage_uri_5: {type: String, required: false},
+    toiletimage_uri_6: {type: String, required: false},
 });
 
 exports.InteractionSchema = InteractionSchema;
 exports.CommentSchema = CommentSchema;
 exports.UserSchema = UserSchema;
+exports.ToiletSchema = ToiletSchema;

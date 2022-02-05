@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 mongoose.connect('mongodb://localhost:27017/kolo');
 const Schemas = require('./schemas');
 const User = mongoose.model('users', Schemas.UserSchema);
+const Toilet = mongoose.model('toilets', Schemas.ToiletSchema);
 
 function hashPwd(pwd) {
   return bcrypt.hash(pwd, 10);
@@ -67,7 +68,14 @@ async function get_userdata(userid) {
   return user
 }
 
+async function get_toiletdata(toiletid) {
+  let toilet = await Toilet.findById(toiletid)
+  console.log(toilet)
+  return toilet
+}
+
 exports.create_user = create_user;
 exports.login_user = login_user;
 exports.get_userid_from_username = get_userid_from_username;
 exports.get_userdata = get_userdata;
+exports.get_toiletdata = get_toiletdata;
