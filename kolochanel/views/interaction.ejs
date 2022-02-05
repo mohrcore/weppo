@@ -13,18 +13,22 @@
 
 <div class="d-flex flex-column bd-highlight mb-3">
   <!-- profile picture and metadata -->
+
   <div class="p-2 bd-highlight">
     <div class="d-flex flex-row bd-highlight mb-3">
       <img class="rounded-circle p-2 bd-highlight img-responsive" src="<%= primary_pfp %>" style="max-width: 15%;">
       <div class="position-relative translate-middle badge rounded-pill bg-secondary" style="height: 10%;">⭐⭐⭐⭐⭐</div>
+      <% if(comment_id != "None") { %>
       <p class="p-2 bd-highlight" style="width: 100%; align-self: end; position:relative; left:-12%; top:20%">
         <%= identity %> Użytkownik <%= primary_username %> skomentował o  <%= comment_map[comment_id].timestamp %> :
       </p>
+      <% } %>
+
     </div>
   </div>
+  <% if(comment_id != "None") { %>
 
   <!-- comment body -->
-  <% if(comment_id != "None") { %>
     <div class="p-2 bd-highlight">
       <% if(comment_map[comment_id].resource_uri == 'None' && comment_map[comment_id].content == 'None') { %>
         <p>wtf?</p>
@@ -57,8 +61,24 @@
             Użytkownik <%= responder_username %> skomentował o  <%= comment_map[response_id].timestamp %> :
           </p>
         </div>
-        <%= comment_map[response_id].content %>
-      </div>
+        <div class="p-2 bd-highlight">
+          <% if(comment_map[response_id].resource_uri == 'None' && comment_map[response_id].content == 'None') { %>
+            <p>wtf?</p>
+          <%= comment_map[response_id].content %> 
+          <% } else if(comment_map[response_id].resource_uri != 'None' && comment_map[response_id].content == 'None') { %>
+            </p><%= comment_map[response_id].resource_uri %></p>
+          <% } else if(comment_map[response_id].resource_uri == 'None' && comment_map[response_id].content != 'None') { %>
+            <p><%= comment_map[response_id].content %></p>
+          <% } else if(comment_map[response_id].resource_uri != 'None' && comment_map[response_id].content != 'None') { %>
+            <div class="d-flex flex-row bd-highlight mb-3">
+              <img class="p-2 bd-highlight img-responsive" src="<%= comment_map[response_id].resource_uri %>" style="max-width: 30%;">
+              <p class="p-2 bd-highlight"><%= comment_map[response_id].content %> </p>    
+            </div>
+          <% } else { %>
+            <p>wtf></p>
+          <% } %>
+          </div>
+          </div>
     <% } %>
   <% } %>
 
