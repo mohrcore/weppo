@@ -11,21 +11,27 @@
 <% var primary_pfp = user_map[primary_userid].pfp_uri %> 
 <% var responder_pfp = user_map[responder_userid].pfp_uri %> 
 
-<div class="d-flex flex-column bd-highlight mb-3">
+<div class="d-flex flex-column mb-3">
   <!-- profile picture and metadata -->
+  <div class="p-2">
+    <div class="d-flex flex-row mb-1" style="position:relative">
+      <img class="rounded-circle p-1 img-responsive" src="<%= primary_pfp %>" style="width: 20%; height: 20%">
+      <div class="position-absolute badge rounded-pill bg-danger" style="width: 20%; translate: 60% -30%;">
+        <%- include('star_rating.ejs', {rating: 2.5}) %>
+      </div>
 
-  <div class="p-2 bd-highlight">
-    <div class="d-flex flex-row bd-highlight mb-3">
-      <img class="rounded-circle p-2 bd-highlight img-responsive" src="<%= primary_pfp %>" style="max-width: 15%;">
-      <div class="position-relative translate-middle badge rounded-pill bg-secondary" style="height: 10%;">⭐⭐⭐⭐⭐</div>
       <% if(comment_id != "None") { %>
-      <p class="p-2 bd-highlight" style="width: 100%; align-self: end; position:relative; left:-12%; top:20%">
-        <%= identity %> Użytkownik <%= primary_username %> skomentował o  <%= comment_map[comment_id].timestamp %> :
+      <p class="p-1" style="flex-shrink: 100; align-self:flex-end;">
+        <%= primary_username %> skomentował o  <%= comment_map[comment_id].timestamp %> :
       </p>
       <% } %>
-
+      <!-- interaction rating from client -->
+      <div class="badge rounded-pill bg-secondary" style="position:absolute; width: 32%; top:0rem; right:0rem">
+        <%- include('star_rating.ejs', {rating: 3.5}) %>
+      </div>
     </div>
   </div>
+
   <% if(comment_id != "None") { %>
 
   <!-- comment body -->
@@ -54,11 +60,13 @@
       <% } else { %>
         <div class="nested_content_host-box">  
       <% } %>
-        <div class="d-flex flex-row bd-highlight mb-3">
-          <img class="rounded-circle p-2 bd-highlight img-responsive" src="<%= responder_pfp %>" style="max-width: 15%;">
-          <div class="position-relative translate-middle badge rounded-pill bg-secondary" style="height: 10%;">⭐⭐⭐⭐⭐</div>
-          <p class="p-2 bd-highlight" style="width: 100%; align-self: end; position:relative; left:-12%; top:20%">
-            Użytkownik <%= responder_username %> skomentował o  <%= comment_map[response_id].timestamp %> :
+      <div class="d-flex flex-row mb-1" style="position:relative">
+        <img class="rounded-circle p-1 img-responsive" src="<%= responder_pfp %>" style="width: 20%; height: 20%">
+        <div class="position-absolute badge rounded-pill bg-danger" style="width: 20%; translate: 60% -30%;">
+          <%- include('star_rating.ejs', {rating: 1.5}) %>
+          </div>
+          <p class="p-1" style="flex-shrink: 100; align-self:flex-end;">
+            <%= responder_username %> skomentował o  <%= comment_map[response_id].timestamp %> :
           </p>
         </div>
         <div class="p-2 bd-highlight">
