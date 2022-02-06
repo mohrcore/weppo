@@ -54,6 +54,12 @@ const MatchMakerSchema = new mongoose.Schema({
     result:  {type: Boolean, required: false},
 });
 
+const SleepyRequestSchema = new mongoose.Schema({
+    proposed_client:  {type: mongoose.Types.ObjectId, required: true},
+    proposed_host:  {type: mongoose.Types.ObjectId, required: true},
+});
+
+exports.SleepyRequestSchema = SleepyRequestSchema;
 exports.InteractionSchema = InteractionSchema;
 exports.CommentSchema = CommentSchema;
 exports.UserSchema = UserSchema;
@@ -65,9 +71,11 @@ const Toilet = mongoose.model('toilets', ToiletSchema);
 const Comment = mongoose.model('comments', CommentSchema);
 const Interaction = mongoose.model('interactions', InteractionSchema);
 const Match = mongoose.model('matchmaker', MatchMakerSchema);
+const SleepyRequest = mongoose.model('sleepy_requests', SleepyRequestSchema);
 
 exports.User = User;
 exports.Toilet = Toilet;
 exports.Comment = Comment;
 exports.Interaction = Interaction;
 exports.Match = Match;
+exports.SleepyRequest = SleepyRequest;

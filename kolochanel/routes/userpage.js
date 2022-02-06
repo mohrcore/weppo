@@ -139,17 +139,19 @@ router.get('/username/:username', async(req, res, next) => {
 
     let authed_user = false;
     let authorized_actor = "nikt"
-    /*
     if (req.user && (req.user.username == req.params.username)) {
         authed_user = true;
         authorized_actor = String(user_id);
     }
-    */
-    authed_user = true;
-    authorized_actor = String(user_id);
+
+    let logged_user = "None"
+    if (req.user && req.user.username) {
+        logged_user = req.user.username;
+    }
 
     pagedata = {
       username: req.params.username,
+      logged_user: logged_user,
       user_quote: userdata.user_quote ? userdata.user_quote : "użytkownik nie napisał nic o sobie",
       user_long_description: userdata.user_long_description ? userdata.user_long_description : "",
       pfp_uri: userdata.pfp_uri,

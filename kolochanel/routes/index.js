@@ -14,6 +14,7 @@ router.get('/', function(req, res, next) {
 
   if (req.user != undefined) {
     t.login_status = 'Logged-in as ' + req.user.username;
+    res.redirect('/userpage/username/' + req.user.username);
   }
 
   console.log(req.user);

@@ -58,9 +58,6 @@
 <% } else if(tref == "Invite") { %>
     <% if (interactive_page == true) { %> 
     <div class="p-2 nested_toilet_subview-box" style = "max-width: 33%;">
-        <!--
-        <img class="p-1 img-responsive" src="/images/add_new_box.jpg" style="width: 100%;" onclick="addToilet()">
--->
         <p> Dodaj nową toaletę</p>
         <form action="/userpage/addshitter/username/<%= username %>" id="addshitter" method="post">
             <input class="form-control" name="toilet_name" type="text" placeholder="Nazwa" aria-label="default input example">
