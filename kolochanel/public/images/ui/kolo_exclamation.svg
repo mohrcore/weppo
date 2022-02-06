@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="4.5640626mm"
+   height="16.243847mm"
+   viewBox="0 0 4.5640626 16.243847"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="kolo_exclamation.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:snap-global="true"
+     inkscape:snap-bbox="true"
+     inkscape:snap-bbox-midpoints="false"
+     inkscape:zoom="0.77593295"
+     inkscape:cx="268.70878"
+     inkscape:cy="90.858366"
+     inkscape:window-width="1920"
+     inkscape:window-height="1060"
+     inkscape:window-x="0"
+     inkscape:window-y="20"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <sodipodi:guide
+       position="-16.207711,40.35632"
+       orientation="1,0"
+       id="guide42755" />
+    <sodipodi:guide
+       position="67.183369,33.12013"
+       orientation="1,0"
+       id="guide42757" />
+    <sodipodi:guide
+       position="-9.3924753,20.21124"
+       orientation="1,0"
+       id="guide42964" />
+    <sodipodi:guide
+       position="60.368129,20.21124"
+       orientation="1,0"
+       id="guide42966" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-79.514162,-57.024233)">
+    <g
+       id="g119046"
+       transform="translate(-4.3308481,0.24113655)">
+      <path
+         id="path117863"
+         style="fill:#000000;fill-opacity:1;stroke-width:5.68063;stroke-linecap:round;stroke-opacity:0.8"
+         d="m 325.51953,214.61328 c -4.76337,2.1e-4 -8.625,3.38646 -8.625,8.625 0,5.23854 3.57112,31.68528 4.09375,34.75781 0.52263,3.07253 2.02804,4.53299 4.53125,4.53321 2.50321,-2.2e-4 4.00862,-1.46068 4.53125,-4.53321 0.52263,-3.07253 4.09375,-29.51927 4.09375,-34.75781 0,-5.23854 -3.86163,-8.62479 -8.625,-8.625 z"
+         transform="scale(0.26458333)" />
+      <circle
+         style="fill:#000000;fill-opacity:1;stroke-width:0.789656;stroke-linecap:round;stroke-opacity:0.8"
+         id="circle117947"
+         cx="86.12709"
+         cy="71.827942"
+         r="1.199001" />
+    </g>
+  </g>
+</svg>

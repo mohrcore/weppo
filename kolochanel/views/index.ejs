@@ -15,21 +15,18 @@
   </head>
   <body>
     <div class="content-box-constrained">
-      <div class="content-floating">
-        <h1 style="text-align:center">KOLO CHANEL</h1>
+      <%- include('kolochanel_logo.ejs', { user: user }) %>
+      <div class="content-box-constrained-short">
+        <div class="content-floating">
+          <p style="text-align:center"><%= login_status %></p>
+        </div>
+        <div class="content-floating">
+          <button class="w-100 btn kc-btn" type="button" onclick="goLogin()">Zaloguj się</button>
+        </div>
+        <br>
+        <div class="content-floating">
+          <button class="w-100 btn kc-btn" type="button" onclick="goRegister()">Załóż konto</button>
       </div>
-      <div class="content-floating">
-        <h6 style="text-align:center">Portal anonsów sanitarnych</h6>
-      </div>
-      <div class="content-floating">
-        <h6 style="text-align:center"><%= login_status %></h6>
-      </div>
-      <div class="content-floating">
-        <button class="w-100 btn btn-primary" type="button" onclick="goLogin()">Zaloguj się</button>
-      </div>
-      <br>
-      <div class="content-floating">
-        <button class="w-100 btn btn-primary" type="button" onclick="goRegister()">Załóż konto</button>
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>  

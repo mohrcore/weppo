@@ -13,43 +13,33 @@
   <body>
     <body>
       <div class="content-box-constrained">
-        <div class="content-floating">
-          <h1 style="text-align:center">KOLO CHANEL</h1>
-        </div>
-        <div class="content-floating">
-          <h6 style="text-align:center">Logowanie użytkownika</h6>
-        </div>
-        <form action="login_user", method = "POST">
-          <div class="form-floating mb-3">
-            <input type="username" name="username" class="form-control" id="floatingInput" placeholder="name@example.com">
-            <label for="floatingInput">Nazwa użytkownika</label>
+        <%- include('kolochanel_logo.ejs', { user: user }) %>
+        <div class="content-box-constrained-short">
+          <div class="content-floating">
+            <p style="text-align:center">Logowanie użytkownika</p>
           </div>
-          <div class="form-floating mb-3">
-            <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
-            <label for="floatingPassword">Hasło</label>
+          <form action="login_user", method = "POST">
+            <div class="form-floating mb-3">
+              <input type="username" name="username" class="form-control" id="floatingInput" placeholder="name@example.com">
+              <label for="floatingInput">Nazwa użytkownika</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
+              <label for="floatingPassword">Hasło</label>
+            </div>
+            <div class="form-floating mb-3">
+              <button type="submit" class="w-100 btn kc-btn">Zaloguj</button>
+            </div>
+          </form>
+          <div class="content-floating">
+            <p style="text-align:center">Nie masz konta? Możesz je założyć</p>
           </div>
-          <div class="form-floating mb-3">
-            <button type="submit" class="w-100 btn btn-primary">Zaloguj</button>
+          <div class="content-floating">
+            <button class="w-100 btn kc-btn" type="button" onclick="goRegister()">Załóż konto</button>
           </div>
-        </form>
-        <div class="content-floating">
-          <h6 style="text-align:center">Nie masz konta? Możesz je założyć</h6>
-        </div>
-        <div class="content-floating">
-          <button class="w-100 btn btn-primary" type="button" onclick="goRegister()">Załóż konto</button>
         </div>
       </div>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>  </body>
     </body>
-    <!--    <div class="center">
-        <label for="username_input">Nazwa użytkownika:</label><br>
-        <input id="username_input" type="text" name="username"><br>
-        <label for="pwd_input">Hasło:</label><br>
-        <input id="pwd_input" type="password" name="pwd"><br><br>
-        <input type="submit" value="Loguj">
-      </form>
-    </div>
-  -->
-
   </body>
 </html>
