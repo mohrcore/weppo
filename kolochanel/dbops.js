@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 mongoose.connect('mongodb://localhost:27017/kolo');
-const { User, Toilet, Comment, Interaction, Match} = require('./schemas');
+const { User, Toilet, Comment, Interaction, Match, SleepyRequest, SleepyRequestSchema} = require('./schemas');
 
 
 function hashPwd(pwd) {
@@ -89,6 +89,7 @@ async function register_matchresult(token, decision) {
   matching.ranked = true
   console.log(matching)
   await Match.findByIdAndUpdate(matching._id, matching);
+  return matching;
 }
 
 async function produce_matches(userid) {
@@ -98,11 +99,9 @@ async function produce_matches(userid) {
   for(let m of umatches)
     used_toilets.add(String(m.proposed_toilet._id))
 
-  console.log(used_toilets)
   for(let t of toilets)
     if(!used_toilets.has(String(t._id))) {
       let towner = await get_owner_of_toilet(t._id);
-      console.log("AAAAAAAAAAAAAAAAAAAAA", towner._id, userid)
       if(String(towner._id) != String(userid)) {
         let m = new Match({
           proposed_client: userid,
@@ -114,6 +113,28 @@ async function produce_matches(userid) {
         await m.save();
       }
   }
+}
+
+async function pop_sleepy_request(clientid, hostid) {
+  await SleepyRequest.findOneAndDelete({proposed_client: clientid, proposed_host: hostid})
+}
+
+async function get_sleepy_requests_for_userid(userid) {
+  let reqs = await SleepyRequest.find({proposed_host: userid})
+  return reqs;
+}
+
+async function add_sleepy_request(host_userid, client_userid) {
+  let req = await SleepyRequest.findOne({proposed_client: client_userid, proposed_host: host_userid})
+  if (req != null)
+    return;
+  
+  req = new SleepyRequest({
+    proposed_client: client_userid,
+    proposed_host: host_userid,
+  })
+
+  await req.save();
 }
 
 async function get_available_matches(username) {
@@ -260,6 +281,16 @@ async function rate_interaction(intent, interaction_id, rating) {
   );
 }
 
+async function create_interaction(host_userid, client_userid) {
+  let i = new Interaction({
+    timestamp: new Date().getTime(),
+    host_userid: host_userid,
+    client_userid: client_userid
+  })
+
+  await i.save();
+}
+
 async function link_comment(comment_id, intent, interaction_id) {
   let interaction = await Interaction.findById(interaction_id)
 
@@ -308,3 +339,7 @@ exports.rate_interaction = rate_interaction;
 exports.get_owner_of_toilet = get_owner_of_toilet;
 exports.get_available_matches = get_available_matches;
 exports.register_matchresult = register_matchresult;
+exports.add_sleepy_request = add_sleepy_request;
+exports.get_sleepy_requests_for_userid = get_sleepy_requests_for_userid;
+exports.pop_sleepy_request = pop_sleepy_request;
+exports.create_interaction = create_interaction;

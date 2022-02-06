@@ -1,45 +1,48 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <script>
-      let matchmaking_session = null;
-      function callback(arg) {
-        console.log(arg);
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <script>
+    let matchmaking_session = null;
+    function callback(arg) {
+      console.log(arg);
+    }
+
+    function render_modal(data) {
+      document.getElementById("modal_contents").hidden = false;
+
+      document.getElementById("modal_toilet_bio").innerHTML = data.toiletname;
+      if (data.toiletdesc) {
+        document.getElementById("modal_toilet_sub_bio").innerHTML = data.toiletdesc;
+      } else {
+        document.getElementById("modal_toilet_sub_bio").innerHTML = "Użytkownik nic nie napisał o toalecie";
+      }
+      document.getElementById("modal_username").innerHTML = data.username;
+      document.getElementById("modal_bio").innerHTML = data.user_quote;
+      if (data.user_long_description) {
+        document.getElementById("modal_userlong_bio").innerHTML = data.user_long_description;
+      } else {
+        document.getElementById("modal_userlong_bio").innerHTML = "Użytkownik nic o sobie nie napisał";
       }
 
-      function render_modal(data) {
-        document.getElementById("modal_contents").hidden = false;
-
-        document.getElementById("modal_toilet_bio").innerHTML = data.toiletname;
-        if(data.toiletdesc) {
-          document.getElementById("modal_toilet_sub_bio").innerHTML = data.toiletdesc;
-        } else {
-          document.getElementById("modal_toilet_sub_bio").innerHTML = "Użytkownik nic nie napisał o toalecie";
-        }
-        document.getElementById("modal_username").innerHTML = data.username;
-        document.getElementById("modal_bio").innerHTML = data.user_quote;
-        if(data.user_long_description) {
-          document.getElementById("modal_userlong_bio").innerHTML = data.user_long_description;
-        } else {
-          document.getElementById("modal_userlong_bio").innerHTML = "Użytkownik nic o sobie nie napisał";
-        }
-
-        document.getElementById("modal_token").innerHTML = data.validation_token;
-        document.getElementById("modal_pfp").src = data.pfp_uri;
-        document.getElementById("modal_pfp").onclick = function() {
-          window.location.href='/userpage/username/' + data.username;
-        }
-
-        for(let i of ["1", "2", "3", "4", "5", "6"]) {
-          document.getElementById("modal_toiletimage_" + i).src = data.toilet_images[Number(i) - 1];
-        }
+      document.getElementById("modal_token").innerHTML = data.validation_token;
+      document.getElementById("modal_pfp").src = data.pfp_uri;
+      document.getElementById("modal_pfp").onclick = function () {
+        window.location.href = '/userpage/username/' + data.username;
       }
 
-      function fetch_new_shitter() {
-        fetch('/endpoint/get_toilet/username/<%= username%>')
+      for (let i of ["1", "2", "3", "4", "5", "6"]) {
+        document.getElementById("modal_toiletimage_" + i).src = data.toilet_images[Number(i) - 1];
+      }
+    }
+
+    function fetch_new_shitter() {
+      fetch('/endpoint/get_toilet/username/<%= username%>')
         .then(response => response.json())
         .then(response => {
           console.log(response)
@@ -55,215 +58,320 @@
             render_modal(response)
           }
         });
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    let in_request = false;
+
+
+    function respond(result) {
+      let token = document.getElementById("modal_token").innerHTML;
+      document.getElementById("form_token").value = token;
+      document.getElementById("form_decision").value = result;
+      document.getElementById("matchmaking_form").submit();
+      fetch_new_shitter();
+    }
+
+    function confirm_gps() {
+      document.getElementById("modal_confirm_btn").hidden = true;
+      document.getElementById("modal_yes_btn").hidden = false;
+      document.getElementById("modal_no_btn").hidden = false;
+
+      document.getElementById("fld_gps_lon").hidden = true;
+      document.getElementById("fld_gps_lat").hidden = true;
+      document.getElementById("fld_gps_lon").hidden = true;
+      document.getElementById("fld_gps_lat").hidden = true;
+
+      document.getElementById("modal_label_1").hidden = true;
+      document.getElementById("modal_label_2").hidden = true;
+      document.getElementById("modal_label_3").hidden = true;
+      fetch_new_shitter();
+    }
+
+    function deploy_invitation_toast(response) {
+      let toast = new bootstrap.Toast(document.getElementById("liveToast"))
+      document.getElementById("toast_pfp").src = response.client_pfp;
+      document.getElementById("toast_username").innerHTML = "Użytkownik " + response.client_username + " chce się z tobą spotkać";
+      document.getElementById("form_client_userid").value = response.client_userid;
+      document.getElementById("form_host_userid").value = response.host_userid;
+      toast.show();
+    }
+
+    function toast_respond(result) {
+      let toast = new bootstrap.Toast(document.getElementById("liveToast"))
+      let token = document.getElementById("modal_token").innerHTML;
+      document.getElementById("form_meetup_decision").value = result;
+      document.getElementById("matchmaking_req_form").submit();
+      toast.hide();
+      in_request = false;
+    }
+
+    async function observer() {
+      let b = document.getElementById("logged_button")
+      if (b) {
+        while (true) {
+          if (!in_request) {
+            fetch('/endpoint/get_requests/username/<%= username%>')
+              .then(response => response.json()).then(response => {
+                if (!response.done) {
+                  deploy_invitation_toast(response)
+                  in_request = true;
+                }
+              });
+          }
+
+          await sleep(1000);
+        }
       }
-
-      function respond(result) {
-        let token = document.getElementById("modal_token").innerHTML;
-        document.getElementById("form_token").value = token;
-        document.getElementById("form_decision").value = result;
-        document.getElementById("matchmaking_form").submit();
-        fetch_new_shitter()
-      }
-
-      function confirm_gps() {
-        console.log()
-        document.getElementById("modal_confirm_btn").hidden = true;
-        document.getElementById("modal_yes_btn").hidden = false;
-        document.getElementById("modal_no_btn").hidden = false;
-
-        document.getElementById("fld_gps_lon").hidden = true;
-        document.getElementById("fld_gps_lat").hidden = true;
-        document.getElementById("fld_gps_lon").hidden = true;
-        document.getElementById("fld_gps_lat").hidden = true;
-
-        document.getElementById("modal_label_1").hidden = true;
-        document.getElementById("modal_label_2").hidden = true;
-        document.getElementById("modal_label_3").hidden = true;
-        fetch_new_shitter();
-      }
+    }
+    window.onload = observer;
   </script>
-  </head>
-  <body>
-    <div class="content-box-profile">
-      <% if(interactive_page) { %>
-      <button type="button" class="w-100 btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">  
+</head>
+
+<body>
+  <div class="content-box-profile">
+    <% if(interactive_page) { %>
+      <button type="button" id="logged_button" class="w-100 btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
         <h1>szukaj użytkowników w pobliżu!</h1>
       </button>
-      <% } else if(logged_user != "None") {%>
-        <button type="button" class="w-100 btn btn-primary" onclick="window.location.href='/userpage/username/<%=logged_user%>'">  
+      <% } else if(logged_user !="None" ) {%>
+        <button type="button" class="w-100 btn btn-primary"
+          onclick="window.location.href='/userpage/username/<%=logged_user%>'">
           <h1>Powróć na swój profil</h1>
-        </button>  
-      <% } %>
+        </button>
+        <% } %>
 
-      <div class="content-floating">
-          <h1 style="text-align:center">KOLO CHANEL</h1>
-      </div>
-      <div class="content-floating">
-        <h6 style="text-align:center">Podgląd profilu</h6>
-      </div>
-      <div class="p-2 d-flex flex-column bd-highlight mb-3">
-        <div class="p-2 nested_content-box">
-          <div class="d-flex flex-row bd-highlight mb-3">
-            <img class="p-1 img-responsive" src="<%= pfp_uri %>" style="width: 45%; height: 45%">
-            <div class="p-2 nested_content_host-box">
-              <div class="p-2 d-flex flex-row bd-highlight mb-3" style="align-items: stretch;">
-                <% if(interactive_page) { %>
-                <img src="/images/icons/pencil-square.svg" class="p-1 img-responsive" style="width: 7%; height: 7%" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                <% } %>
-                <h1 class="p-2"> <%= username %> </h1>
-              </div>
-              <div class="p-2 d-flex flex-row bd-highlight mb-3" style="align-items: stretch;">
-                <% if(interactive_page) { %>
-                <img src="/images/icons/pencil-square.svg" class="p-1 img-responsive" style="width: 5%; height: 5%" data-bs-toggle="modal" data-bs-target="#exampleModal2">
-                <% } %>
-                <h3 class="p-2"> <%= user_quote %> </h3>
-              </div>
-              <div class="p-2 d-flex flex-row bd-highlight mb-3" style="align-items: stretch;">
-                <% if(interactive_page) { %>
-                <img src="/images/icons/pencil-square.svg" class="p-1 img-responsive" style="width: 4%; height: 4%" data-bs-toggle="modal" data-bs-target="#exampleModal3">
-                <% } %>
-                <h5 class="p-2"> <%= user_long_description %> </h5>
-              </div>
-            </div>
+          <div class="content-floating">
+            <h1 style="text-align:center">KOLO CHANEL</h1>
           </div>
-        </div>
-        <h2 class="p-2">PRZEGLĄD ARMATURY</h2>
-        <div class="p-2 d-flex flex-row bd-highlight mb-3">
-            <%- include('toilet_subview.ejs', {tref: t1_ref, interactive_page: interactive_page, username: username, imgroup:"1"}) %>
-            <%- include('toilet_subview.ejs', {tref: t2_ref, interactive_page: interactive_page, username: username, imgroup:"2"}) %>
-            <%- include('toilet_subview.ejs', {tref: t3_ref, interactive_page: interactive_page, username: username, imgroup:"3"}) %>
-        </div>
-        <h2 class="p-2">PRZEGLĄD KOMENTARZY</h2>
-        <%- include('interaction_top.ejs', {interaction_descriptor: interaction_query, authorized_actor: authorized_actor}) %>
-        </div>
-      </div>
-      </div>
-    </div>
-
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Wyszukiwarka profili</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+          <div class="content-floating">
+            <h6 style="text-align:center">Podgląd profilu</h6>
           </div>
-          <div class="modal-body">
-            <p id="modal_label_3">Wprowadź swoją pozycję GPS</p>
-            <textarea class="form-control" id="fld_gps_lat" name="fld_gps_lat" rows="1"></textarea>
-            <label id="modal_label_2" for="fld_gps_lat">Długość geograficzna</label>
-            <textarea class="form-control" id="fld_gps_lon" name="fld_gps_lon" rows="1"></textarea>
-            <label id="modal_label_1" for="fld_gps_lon">Szerokość geograficzna</label>
-
-            <div id="modal_contents" hidden>
-              <div class="p-2 nested_content_host-box">
-                <div class="d-flex flex-column bd-highlight mb-3">
-                  <img id="modal_pfp" class="p-1 img-responsive rounded-circle" src="/images/empty_box.jpg" style="width: 40%; height: 40%">
-                  <div class="p-2"><h1 id="modal_username">test</h1></div>
-                  <div class="p-2"><h3 id="modal_bio">test</h3></div>
-                </div>
-                <div class="p-2"><h5 id="modal_userlong_bio">test</h5></div>
-
-              </div>
-              <!-- view toalety-->
-              <div class="p-2 nested_content_host-box">
-                <h4 id="modal_toilet_bio"></h4>
-                <h6 id="modal_toilet_sub_bio"></h6>
-                <h4 id="modal_token" hidden></h4>
-
-                <div class="d-flex flex-row bd-highlight mb-3" style="flex-wrap:wrap">
-                  <img id = "modal_toiletimage_1" class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
-                  <img id = "modal_toiletimage_2" class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
-                  <img id = "modal_toiletimage_3" class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
-                  <img id = "modal_toiletimage_4" class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
-                  <img id = "modal_toiletimage_5" class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
-                  <img id = "modal_toiletimage_6" class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
+          <div class="p-2 d-flex flex-column bd-highlight mb-3">
+            <div class="p-2 nested_content-box">
+              <div class="d-flex flex-row bd-highlight mb-3">
+                <img class="p-1 img-responsive" src="<%= pfp_uri %>" style="width: 45%; height: 45%">
+                <div class="p-2 nested_content_host-box">
+                  <div class="p-2 d-flex flex-row bd-highlight mb-3" style="align-items: stretch;">
+                    <% if(interactive_page) { %>
+                      <img src="/images/icons/pencil-square.svg" class="p-1 img-responsive"
+                        style="width: 7%; height: 7%" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                      <% } %>
+                        <h1 class="p-2">
+                          <%= username %>
+                        </h1>
+                  </div>
+                  <div class="p-2 d-flex flex-row bd-highlight mb-3" style="align-items: stretch;">
+                    <% if(interactive_page) { %>
+                      <img src="/images/icons/pencil-square.svg" class="p-1 img-responsive"
+                        style="width: 5%; height: 5%" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                      <% } %>
+                        <h3 class="p-2">
+                          <%= user_quote %>
+                        </h3>
+                  </div>
+                  <div class="p-2 d-flex flex-row bd-highlight mb-3" style="align-items: stretch;">
+                    <% if(interactive_page) { %>
+                      <img src="/images/icons/pencil-square.svg" class="p-1 img-responsive"
+                        style="width: 4%; height: 4%" data-bs-toggle="modal" data-bs-target="#exampleModal3">
+                      <% } %>
+                        <h5 class="p-2">
+                          <%= user_long_description %>
+                        </h5>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" id="modal_back_btn" class="btn btn-success" data-bs-dismiss="modal" hidden>Powróć do profilu</button>
-            <button type="button" id="modal_confirm_btn" class="btn btn-success" data-dismiss="modal" onclick="confirm_gps()">Potwierdź</button>
-            <button type="button" id="modal_yes_btn" class="btn btn-danger" style="width:45%" data-dismiss="modal" onclick="respond('false')" hidden>Wolę nie</button>
-            <button type="button" id="modal_no_btn" class="btn btn-success" style="width:45%" data-dismiss="modal" onclick="respond('true')" hidden>Chętnie!</button>
-          </div>
-        </div>
-      </div>
-    </div>
-            
-    <!--nie wiem jak to zrobić dobrze, modal od zmiany loginu-->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Zmiana loginu</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            Ten feature nie jest jeszcze wspierany!
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
-            <button type="button" class="btn btn-primary">Zapisz</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!--nie wiem jak to zrobić dobrze, modal od zmiany bio-->
-    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModal2Label" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModal2Label">Zmiana Bio</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h2 class="p-2">PRZEGLĄD ARMATURY</h2>
+            <div class="p-2 d-flex flex-row bd-highlight mb-3">
+              <%- include('toilet_subview.ejs', {tref: t1_ref, interactive_page: interactive_page, username: username,
+                imgroup:"1"}) %>
+                <%- include('toilet_subview.ejs', {tref: t2_ref, interactive_page: interactive_page, username: username,
+                  imgroup:"2"}) %>
+                  <%- include('toilet_subview.ejs', {tref: t3_ref, interactive_page: interactive_page, username:
+                    username, imgroup:"3"}) %>
             </div>
-            <div class="modal-body">
-              <div class="form-floating">
-                <form action="/userpage/change_profile_text/username/<%= username %>" id="bio_input" name="bio_input" method = "POST">
-                  <textarea class="form-control" placeholder="Leave a comment here" form="bio_input" id="bio_input" name="bio_input" rows="1"></textarea>
-                  <label for="bio_input">Lorem ipsum dolor sit amet, consectetur adipiscing elit</label>
-                </form>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
-              <button type="submit" form="bio_input" class="btn btn-primary">Zapisz</button>
-            </div>
+            <h2 class="p-2">PRZEGLĄD KOMENTARZY</h2>
+            <%- include('interaction_top.ejs', {interaction_descriptor: interaction_query, authorized_actor:
+              authorized_actor}) %>
           </div>
-        </div>
-    </div>
-
-    <!--nie wiem jak to zrobić dobrze, modal od zmiany długiego bio-->
-    <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModal3Label" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModal3Label">Zmiana Opisu</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="form-floating">
-              <form action="/userpage/change_profile_text/username/<%= username %>" id="desc_input" name="desc_input" method = "POST">
-                <textarea class="form-control" placeholder="Leave a comment here" form="desc_input" id="desc_input" name="desc_input" rows="1"></textarea>
-                <label for="desc_input">Lorem ipsum dolor sit amet, consectetur adipiscing elit, zmiana długiego opisu</label>
-              </form>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
-            <button type="submit" form="desc_input" class="btn btn-primary">Zapisz</button>
-          </div>
-        </div>
-      </div>
+  </div>
+  </div>
   </div>
 
-    <form action="/endpoint/submit_result" id="matchmaking_form" method="post">
-      <input class="form-control" name="form_token" id="form_token" type="text" hidden>
-      <input class="form-control" name="form_decision" id="form_decision" type="text" hidden>
-    </form>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>  
-  </body>
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Wyszukiwarka profili</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="modal_label_3">Wprowadź swoją pozycję GPS</p>
+          <textarea class="form-control" id="fld_gps_lat" name="fld_gps_lat" rows="1"></textarea>
+          <label id="modal_label_2" for="fld_gps_lat">Długość geograficzna</label>
+          <textarea class="form-control" id="fld_gps_lon" name="fld_gps_lon" rows="1"></textarea>
+          <label id="modal_label_1" for="fld_gps_lon">Szerokość geograficzna</label>
+          <img id="modal_pfp_top" class="p-1 img-responsive rounded-circle" src="/images/empty_box.jpg" hidden>
+
+          <div id="modal_contents" hidden>
+            <div class="p-2 nested_content_host-box">
+              <div class="d-flex flex-column bd-highlight mb-3">
+                <img id="modal_pfp" class="p-1 img-responsive rounded-circle" src="/images/empty_box.jpg"
+                  style="width: 40%; height: 40%">
+                <div class="p-2">
+                  <h1 id="modal_username">test</h1>
+                </div>
+                <div class="p-2">
+                  <h3 id="modal_bio">test</h3>
+                </div>
+              </div>
+              <div class="p-2">
+                <h5 id="modal_userlong_bio">test</h5>
+              </div>
+
+            </div>
+            <!-- view toalety-->
+            <div class="p-2 nested_content_host-box">
+              <h4 id="modal_toilet_bio"></h4>
+              <h6 id="modal_toilet_sub_bio"></h6>
+              <h4 id="modal_token" hidden></h4>
+
+              <div class="d-flex flex-row bd-highlight mb-3" style="flex-wrap:wrap">
+                <img id="modal_toiletimage_1" class="p-1 img-responsive" src="/images/empty_box.jpg"
+                  style="width: 33%;">
+                <img id="modal_toiletimage_2" class="p-1 img-responsive" src="/images/empty_box.jpg"
+                  style="width: 33%;">
+                <img id="modal_toiletimage_3" class="p-1 img-responsive" src="/images/empty_box.jpg"
+                  style="width: 33%;">
+                <img id="modal_toiletimage_4" class="p-1 img-responsive" src="/images/empty_box.jpg"
+                  style="width: 33%;">
+                <img id="modal_toiletimage_5" class="p-1 img-responsive" src="/images/empty_box.jpg"
+                  style="width: 33%;">
+                <img id="modal_toiletimage_6" class="p-1 img-responsive" src="/images/empty_box.jpg"
+                  style="width: 33%;">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="modal_back_btn" class="btn btn-success" data-bs-dismiss="modal" hidden>Powróć do
+            profilu</button>
+          <button type="button" id="modal_confirm_btn" class="btn btn-success" data-dismiss="modal"
+            onclick="confirm_gps()">Potwierdź</button>
+          <button type="button" id="modal_yes_btn" class="btn btn-danger" style="width:45%" data-dismiss="modal"
+            onclick="respond('false')" hidden>Wolę nie</button>
+          <button type="button" id="modal_no_btn" class="btn btn-success" style="width:45%" data-dismiss="modal"
+            onclick="respond('true')" hidden>Chętnie!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--nie wiem jak to zrobić dobrze, modal od zmiany loginu-->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Zmiana loginu</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Ten feature nie jest jeszcze wspierany!
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+          <button type="button" class="btn btn-primary">Zapisz</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--nie wiem jak to zrobić dobrze, modal od zmiany bio-->
+  <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModal2Label" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModal2Label">Zmiana Bio</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-floating">
+            <form action="/userpage/change_profile_text/username/<%= username %>" id="bio_input" name="bio_input"
+              method="POST">
+              <textarea class="form-control" placeholder="Leave a comment here" form="bio_input" id="bio_input"
+                name="bio_input" rows="1"></textarea>
+              <label for="bio_input">Lorem ipsum dolor sit amet, consectetur adipiscing elit</label>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+          <button type="submit" form="bio_input" class="btn btn-primary">Zapisz</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--nie wiem jak to zrobić dobrze, modal od zmiany długiego bio-->
+  <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModal3Label" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModal3Label">Zmiana Opisu</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-floating">
+            <form action="/userpage/change_profile_text/username/<%= username %>" id="desc_input" name="desc_input"
+              method="POST">
+              <textarea class="form-control" placeholder="Leave a comment here" form="desc_input" id="desc_input"
+                name="desc_input" rows="1"></textarea>
+              <label for="desc_input">Lorem ipsum dolor sit amet, consectetur adipiscing elit, zmiana długiego
+                opisu</label>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+          <button type="submit" form="desc_input" class="btn btn-primary">Zapisz</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-body">
+        <h2 id="toast_username"></h2>
+        <img id="toast_pfp" class="p-1 img-responsive rounded-circle" src="/images/empty_box.jpg" style="width:50%">
+        <div class="d-grid gap-2">
+          <button class="btn btn-success" type="button" onclick="toast_respond('true')">Pewnie!</button>
+          <button class="btn btn-danger" type="button" onclick="toast_respond('false')">Wolę nie</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form action="/endpoint/submit_result" id="matchmaking_form" method="post">
+    <input class="form-control" name="form_token" id="form_token" type="text" hidden>
+    <input class="form-control" name="form_decision" id="form_decision" type="text" hidden>
+  </form>
+  <form action="/endpoint/submit_request" id="matchmaking_req_form" method="post">
+    <input class="form-control" name="form_client_userid" id="form_client_userid" type="text" hidden>
+    <input class="form-control" name="form_host_userid" id="form_host_userid" type="text" hidden>
+    <input class="form-control" name="form_meetup_decision" id="form_meetup_decision" type="text" hidden>
+  </form>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+</body>
+
 </html>
