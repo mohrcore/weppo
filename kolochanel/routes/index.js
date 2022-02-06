@@ -3,27 +3,30 @@ const { ObjectId } = require('mongodb');
 const router = express.Router();
 const dbops = require('../dbops');
 const localauth = require('../localauth');
+const renderWithDefaults = require('../common').renderWithDefaults;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   let t = {
-    login_status: 'Not logged-in'
+    login_status: 'Not logged-in',
+    user: 'None',
   };
 
-  if (req.user != undefined)
+  if (req.user != undefined) {
     t.login_status = 'Logged-in as ' + req.user.username;
+  }
 
   console.log(req.user);
 
-  res.render('index', t);
+  renderWithDefaults(req, res, 'index', t);
 });
 
 router.get('/register', function(req, res) {
-  res.render('register');
+  renderWithDefaults(req, res, 'register');
 });
 
 router.get('/login', function(req, res) {
-  res.render('login');
+  renderWithDefaults(req, res, 'login');
 });
 
 async function login(req, res, next) {
@@ -61,9 +64,9 @@ router.post('/register_user', async (req, res, next) => {
 
   if(typeof(registration_status) === 'string') {
     if (registration_status == "exists_username") {
-      res.render('registration_failed', {error_message: `Użytkownik ${req.body.username} już istnieje`, rplace: 'register'});
+      renderWithDefaults(req, res, 'registration_failed', {error_message: `Użytkownik ${req.body.username} już istnieje`, rplace: 'register'});
     } else if (registration_status == "exists_email") {
-      res.render('registration_failed', {error_message: `Na email ${req.body.email} założone zostało już konto`, rplace: 'register'});
+      renderWithDefaults(req, res, 'registration_failed', {error_message: `Na email ${req.body.email} założone zostało już konto`, rplace: 'register'});
     }
   } else {
     await login(req, res, next);

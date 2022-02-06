@@ -38,13 +38,21 @@ a {
   color: #00B7FF;
 }
 
+p {
+  color: white;
+  font-size: 1.1em;
+}
+
 .content-box-constrained {
   width: 100%;
-  max-width: 25%;
-  padding: 15px;
+  max-width: 33%;
+  padding-left: 4%;
+  padding-right: 4%;
+  padding-top: 2%;
+  padding-bottom: 2%;
   margin: auto;
   background-color: #006eff;
-  border-radius: 15px;
+  border-radius: 1.5em;
 }
 
 .content-box-profile {
@@ -107,4 +115,53 @@ a {
 .interaction_header {
   max-height: 25%;
   height: auto;
+}
+
+.main_logo {
+  margin-top: 1em;
+  margin-bottom: 2em;
+}
+
+.kc-btn {
+  background-color: #0042adff;
+  color: #f2f2f2ff;
+}
+
+.kc-btn:hover {
+  background-color: #ffffffff;
+  color: #006eff;
+}
+
+.content-box-constrained-short {
+  padding-left: 15%;
+  padding-right: 15%;
+}
+
+.kc-alert {
+  background-color: #f7e2acff;
+  border-radius: 0.2em;
+  padding: 1em 1em 1em 3em;
+  display: flex;
+  flex-direction: row;
+}
+
+.kc-alert * {
+  color: black;
+  vertical-align: middle;
+  align-items: center;
+  min-height: 100%;
+}
+
+.kc-alert-item-last {
+}
+
+img.kc-alert-item-last {
+}
+
+.kc-alert-item {
+  margin-right: 3em;  
+}
+
+img.kc-alert-item {
+  height: 5em;
 }

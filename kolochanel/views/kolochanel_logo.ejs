@@ -1,0 +1,11 @@
+<div class="content-floating">
+    <a href="
+      <% if (user == 'None') { %>
+        <%= '/' %>
+      <% } else { %>
+        <%= '/userpage/username/' + user.username %>
+      <% } %>
+    ">
+    <img src="/images/ui/kolo_logo1.svg" class="p-1 img-responsive main_logo" style="width: 100%" alt="KOLO CHANEL" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    </a>
+  </div>

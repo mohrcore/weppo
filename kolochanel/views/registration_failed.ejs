@@ -17,21 +17,18 @@
   </head>
   <body>
     <div class="content-box-constrained">
-      <div class="content-floating">
-        <h1 style="text-align:center">KOLO CHANEL</h1>
-      </div>
-      <div class="content-floating">
-        <h6 style="text-align:center">Portal anonsów sanitarnych</h6>
-      </div>
-      <div class="alert alert-danger" role="alert" style="border-radius: 15px;">
-        <h4 style="text-align:center"><%= error_message %></h4>
-      </div>
-      <div class="content-floating">
-        <% if(rplace == 'login') { %>
-          <button class="w-100 btn btn-primary" type="button" onclick="goLogin()">Powróć do logowania</button>
-        <% } else { %>
-          <button class="w-100 btn btn-primary" type="button" onclick="goRegister()">Powróć do rejestracji</button>
-          <% } %>
+      <%- include('kolochanel_logo.ejs', { user: user }) %>
+      <div class="content-box-constrained-shorthand">
+        <%- include('attention.ejs', {message: error_message}) %>
+        <div class="content-box-constrained-short">
+          <div class="content-floating">
+            <% if(rplace == 'login') { %>
+              <button class="w-100 btn kc-btn" type="button" onclick="goLogin()">Powróć do logowania</button>
+            <% } else { %>
+              <button class="w-100 btn kc-btn" type="button" onclick="goRegister()">Powróć do rejestracji</button>
+              <% } %>
+          </div>
+        </div>
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>  
