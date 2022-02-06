@@ -2,9 +2,8 @@ var mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 mongoose.connect('mongodb://localhost:27017/kolo');
-const Schemas = require('./schemas');
-const User = mongoose.model('users', Schemas.UserSchema);
-const Toilet = mongoose.model('toilets', Schemas.ToiletSchema);
+const {User, Toilet, Comment, Interaction} = require('./schemas');
+
 
 function hashPwd(pwd) {
   return bcrypt.hash(pwd, 10);
@@ -174,6 +173,39 @@ async function add_toilet_instance(userid, toilet_name, toilet_desc, toilet_lat,
   console.log("CRITICAL, TOILET QUOTA EXCEEDED FOR", user._id);
 }
 
+async function make_comment(author, contents, resource_uri) {
+  console.log("adding comment!")
+  let comment = new Comment({
+    timestamp: new Date().getTime(),
+    author: author,
+    comment_contents: contents,
+    resource_uri: resource_uri
+  });
+
+  await comment.save();
+  console.log("created comment with id=", comment._id);
+  return comment._id;
+}
+
+async function link_comment(comment_id, intent, interaction_id) {
+  let interaction = await Interaction.findById(interaction_id)
+
+  if (intent == "host_comments") {
+    console.log("linking comment", comment_id, " to interaction ", interaction_id)
+    interaction.host_comment_reference = comment_id;
+  }
+
+  if (intent == "client_comments") {
+    console.log("linking comment", comment_id, " to interaction ", interaction_id)
+    interaction.client_comment_reference = comment_id;
+  }
+
+
+  await Interaction.findByIdAndUpdate(
+    interaction_id, interaction
+  );
+}
+
 exports.create_user = create_user;
 exports.login_user = login_user;
 exports.get_userid_from_username = get_userid_from_username;
@@ -186,3 +218,5 @@ exports.add_toilet_instance = add_toilet_instance;
 exports.kill_toilet_image = kill_toilet_image;
 exports.kill_toilet = kill_toilet;
 exports.update_toilet = update_toilet;
+exports.make_comment = make_comment;
+exports.link_comment = link_comment;

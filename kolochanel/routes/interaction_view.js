@@ -1,13 +1,15 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-const { get_userid_from_username } = require('../dbops');
+const { link_comment, make_comment, get_userid_from_username } = require('../dbops');
+const multer  = require('multer')
+const upload = multer({ dest: 'public/images/' })
+const path = require('path');
+const sharp = require('sharp');
+const fs = require('fs');
 
 mongoose.connect('mongodb://localhost:27017/kolo');
-const Schemas = require('../schemas');
-const Interaction = mongoose.model('interactions', Schemas.InteractionSchema);
-const Comment = mongoose.model('comments', Schemas.CommentSchema);
-const User = mongoose.model('users', Schemas.UserSchema)
+const {Interaction, Comment, User} = require('../schemas');
 // take a hint for mongoose query
 // return array of
 // - interactions - interactions list (objects same as InteractionSchema)
@@ -83,7 +85,7 @@ async function get_and_squash_comment_query(comment_mapping) {
       resource_uri: c.resource_uri ? c.resource_uri : 'None',
     };
   }
-
+ 
   commentmap['None'] = 'None';
   return { comment_map: commentmap };
 }
@@ -141,9 +143,34 @@ router.get('/username/:username/actor_type/:actor_type', async(req, res, next) =
   inter_query = await get_interactions(inter_query)
   res.render(
     'interaction_wrapper', 
-    { interaction_descriptor: inter_query }
+    { interaction_descriptor: inter_query, authorized_actor: String(user_id) }
   );
 
+});
+
+router.post('/username/:username/publish_comment', upload.single('interaction_image'), async(req, res, next) => {
+  console.log("got request to publish comment", req.params, req.body, req.file);
+  let fpath = null;
+  if (req.file.fieldname) {
+    fpath = '/images/resized' + req.file.filename
+    let rpath = path.resolve(req.file.destination,'resized' + req.file.filename)
+    await sharp(req.file.path).resize(256, 256).jpeg({ quality: 90 }).toFile(rpath)
+    fs.unlinkSync(req.file.path)
+  }
+
+  console.log("fpath is", fpath)
+  let comment_id = await make_comment(
+    mongoose.Types.ObjectId(req.body.author_userid), req.body.interaction_description, fpath
+  );
+
+  await link_comment(
+    comment_id, 
+    req.body.interaction_intent,
+    mongoose.Types.ObjectId(req.body.target_interaction)
+  )
+  
+
+  res.redirect("/interactions/username/studentka_politologii/actor_type/both")
 });
 
 module.exports = router;

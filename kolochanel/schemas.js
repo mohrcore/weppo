@@ -50,3 +50,13 @@ exports.InteractionSchema = InteractionSchema;
 exports.CommentSchema = CommentSchema;
 exports.UserSchema = UserSchema;
 exports.ToiletSchema = ToiletSchema;
+
+const User = mongoose.model('users', UserSchema);
+const Toilet = mongoose.model('toilets', ToiletSchema);
+const Comment = mongoose.model('comments', CommentSchema);
+const Interaction = mongoose.model('interactions', InteractionSchema);
+
+exports.User = User;
+exports.Toilet = Toilet;
+exports.Comment = Comment;
+exports.Interaction = Interaction;

@@ -4,10 +4,6 @@ var mongoose = require('mongoose');
 const { update_toilet, kill_toilet, kill_toilet_image, add_toilet_instance, get_userid_from_username, get_userdata, get_toiletdata, add_toiletimage, change_bio, change_desc } = require('../dbops');
 const { get_and_squash_interaction_query, get_interactions } = require('./interaction_view')
 mongoose.connect('mongodb://localhost:27017/kolo');
-const Schemas = require('../schemas');
-const Interaction = mongoose.model('interactions', Schemas.InteractionSchema);
-const Comment = mongoose.model('comments', Schemas.CommentSchema);
-const User = mongoose.model('users', Schemas.UserSchema)
 const multer  = require('multer')
 const upload = multer({ dest: 'public/images/' })
 const path = require('path');
