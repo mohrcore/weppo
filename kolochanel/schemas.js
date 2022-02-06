@@ -46,17 +46,28 @@ const ToiletSchema = new mongoose.Schema({
     toiletimage_uri_6: {type: String, required: false},
 });
 
+const MatchMakerSchema = new mongoose.Schema({
+    proposed_client:  {type: mongoose.Types.ObjectId, required: true},
+    proposed_toilet:  {type: mongoose.Types.ObjectId, required: true},
+    validation_token:  {type: mongoose.Types.ObjectId, required: true},
+    ranked:  {type: Boolean, required: true},
+    result:  {type: Boolean, required: false},
+});
+
 exports.InteractionSchema = InteractionSchema;
 exports.CommentSchema = CommentSchema;
 exports.UserSchema = UserSchema;
 exports.ToiletSchema = ToiletSchema;
+exports.MatchMakerSchema = MatchMakerSchema;
 
 const User = mongoose.model('users', UserSchema);
 const Toilet = mongoose.model('toilets', ToiletSchema);
 const Comment = mongoose.model('comments', CommentSchema);
 const Interaction = mongoose.model('interactions', InteractionSchema);
+const Match = mongoose.model('matchmaker', MatchMakerSchema);
 
 exports.User = User;
 exports.Toilet = Toilet;
 exports.Comment = Comment;
 exports.Interaction = Interaction;
+exports.Match = Match;

@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 mongoose.connect('mongodb://localhost:27017/kolo');
-const { User, Toilet, Comment, Interaction } = require('./schemas');
+const { User, Toilet, Comment, Interaction, Match} = require('./schemas');
 
 
 function hashPwd(pwd) {
@@ -83,6 +83,49 @@ async function change_desc(userid, new_desc) {
   await User.findByIdAndUpdate(userid, user);
 }
 
+async function register_matchresult(token, decision) {
+  let matching = await Match.findOne({validation_token: token});
+  matching.decision = (decision == 'true');
+  matching.ranked = true
+  console.log(matching)
+  await Match.findByIdAndUpdate(matching._id, matching);
+}
+
+async function produce_matches(userid) {
+  let toilets = await Toilet.find({})
+  let used_toilets = new Set()
+  let umatches = await Match.find({proposed_client: userid, ranked: true})
+  for(let m of umatches)
+    used_toilets.add(m.proposed_toilet)
+
+  for(let t of toilets)
+    if(!used_toilets.has(t._id)) {
+      let towner = await get_owner_of_toilet(t._id);
+      console.log("AAAAAAAAAAAAAAAAAAAAA", towner._id, userid)
+      if(String(towner._id) != String(userid)) {
+        let m = new Match({
+          proposed_client: userid,
+          proposed_toilet: t._id,
+          validation_token: mongoose.Types.ObjectId(),
+          ranked: false
+        })
+
+        await m.save();
+      }
+  }
+}
+
+async function get_available_matches(username) {
+  let userid = await get_userid_from_username(username)
+  let matches = await Match.find({proposed_client: userid, ranked: false})
+  if (matches.length > 0)
+    return matches
+  
+  await produce_matches(userid)
+  
+  matches = await Match.find({proposed_client: userid, ranked: false})
+  return matches
+}
 
 async function get_owner_of_toilet(toiletid) {
   let user = await User.findOne({$or: [
@@ -262,3 +305,5 @@ exports.make_comment = make_comment;
 exports.link_comment = link_comment;
 exports.rate_interaction = rate_interaction;
 exports.get_owner_of_toilet = get_owner_of_toilet;
+exports.get_available_matches = get_available_matches;
+exports.register_matchresult = register_matchresult;

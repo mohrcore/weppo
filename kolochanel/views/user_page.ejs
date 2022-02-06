@@ -18,11 +18,28 @@
         document.getElementById("modal_username").innerHTML = data.username;
         document.getElementById("modal_bio").innerHTML = data.user_quote;
         document.getElementById("modal_userlong_bio").innerHTML = data.user_long_description;
-
+        document.getElementById("modal_token").innerHTML = data.validation_token;
         document.getElementById("modal_pfp").src = data.pfp_uri;
         for(let i of ["1", "2", "3", "4", "5", "6"]) {
           document.getElementById("modal_toiletimage_" + i).src = data.toilet_images[Number(i) - 1];
         }
+      }
+
+      function fetch_new_shitter() {
+        fetch('/endpoint/get_toilet/username/<%= username%>')
+        .then(response => response.json())
+        .then(response => {
+          console.log(response)
+          render_modal(response)
+        });
+      }
+
+      function respond(result) {
+        let token = document.getElementById("modal_token").innerHTML;
+        document.getElementById("form_token").value = token;
+        document.getElementById("form_decision").value = result;
+        document.getElementById("matchmaking_form").submit();
+        fetch_new_shitter()
       }
 
       function confirm_gps() {
@@ -39,13 +56,7 @@
         document.getElementById("modal_label_1").hidden = true;
         document.getElementById("modal_label_2").hidden = true;
         document.getElementById("modal_label_3").hidden = true;
-
-        fetch('/endpoint/get_toilet')
-        .then(response => response.json())
-        .then(response => {
-          console.log(response)
-          render_modal(response)
-        });
+        fetch_new_shitter();
       }
   </script>
   </head>
@@ -131,6 +142,7 @@
               <div class="p-2 nested_content_host-box">
                 <h4 id="modal_toilet_bio"></h4>
                 <h6 id="modal_toilet_sub_bio"></h6>
+                <h4 id="modal_token" hidden></h4>
 
                 <div class="d-flex flex-row bd-highlight mb-3" style="flex-wrap:wrap">
                   <img id = "modal_toiletimage_1" class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
@@ -145,8 +157,8 @@
           </div>
           <div class="modal-footer">
             <button type="button" id="modal_confirm_btn" class="btn btn-success" data-dismiss="modal" onclick="confirm_gps()">Potwierdź</button>
-            <button type="button" id="modal_yes_btn" class="btn btn-danger" style="width:45%" data-dismiss="modal" hidden>Wolę nie</button>
-            <button type="button" id="modal_no_btn" class="btn btn-success" style="width:45%" data-dismiss="modal" hidden>Chętnie!</button>
+            <button type="button" id="modal_yes_btn" class="btn btn-danger" style="width:45%" data-dismiss="modal" onclick="respond('false')" hidden>Wolę nie</button>
+            <button type="button" id="modal_no_btn" class="btn btn-success" style="width:45%" data-dismiss="modal" onclick="respond('true')" hidden>Chętnie!</button>
           </div>
         </div>
       </div>
@@ -218,6 +230,11 @@
         </div>
       </div>
   </div>
+
+    <form action="/endpoint/submit_result" id="matchmaking_form" method="post">
+      <input class="form-control" name="form_token" id="form_token" type="text" hidden>
+      <input class="form-control" name="form_decision" id="form_decision" type="text" hidden>
+    </form>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>  
   </body>
 </html>

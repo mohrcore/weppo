@@ -151,7 +151,6 @@ router.get('/username/:username', async(req, res, next) => {
     */
     authed_user = true;
     authorized_actor = String(user_id);
-    
 
     pagedata = {
         username: req.params.username,

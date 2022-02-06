@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-const {get_toiletdata, get_owner_of_toilet, get_userdata} = require('../dbops')
+const {register_matchresult, get_toiletdata, get_owner_of_toilet, get_userdata, get_available_matches} = require('../dbops')
 
-async function get_payload_for_toiletid(toiletid) {
+async function get_payload_for_toiletid(toiletid, token) {
   let toiletdata = await get_toiletdata(toiletid)
   let userid = await get_owner_of_toilet(toiletid);
   let userdata = await get_userdata(userid)
@@ -14,7 +14,7 @@ async function get_payload_for_toiletid(toiletid) {
     }
   }
 
-  while(built_toiletmap.length < 6)
+  while(toiletimages.length < 6)
     toiletimages.push("/images/empty_box.jpg");
 
 
@@ -27,20 +27,30 @@ async function get_payload_for_toiletid(toiletid) {
     pfp_uri: userdata.pfp_uri,
     user_quote: userdata.user_quote,
     user_long_description: userdata.user_long_description,
-    toilet_images: toiletimages
+    toilet_images: toiletimages,
+    validation_token: token
   }
 
   return payload;
 }
 
 /* GET users listing. */
-router.get('/get_toilet', async function(req, res, next) {
-  console.log(res.user)
+router.get('/get_toilet/username/:username', async function(req, res, next) {
+  console.log(req.params)
   console.log("endpoint_called!")
-
-  let sampleid = mongoose.Types.ObjectId('61ffee0236ad9989cd626efa');
-  let payload = await get_payload_for_toiletid(sampleid);
+  let matches = await get_available_matches(req.params.username)
+  console.log(matches)
+  console.log(matches[0])
+  let payload = await get_payload_for_toiletid(matches[0].proposed_toilet, matches[0].validation_token);
   res.send(JSON.stringify(payload))
 });
+
+router.post('/submit_result', async function(req, res, next) {
+  console.log("result submitted!", req.body)
+  await register_matchresult(
+    req.body.form_token, req.body.form_decision
+  )
+});
+
 
 module.exports = router;
