@@ -152,8 +152,8 @@ router.post('/username/:username/publish_comment', upload.single('interaction_im
   console.log("got request to publish comment", req.params, req.body, req.file);
   let fpath = null;
   if (req.file) {
-    fpath = '/images/resized' + req.file.filename
-    let rpath = path.resolve(req.file.destination,'resized' + req.file.filename)
+    fpath = '/images/dyn/comment_pics/resized' + req.file.filename
+    let rpath = path.resolve(req.file.destination,'dyn/comment_pics/resized' + req.file.filename)
     await sharp(req.file.path).resize(256, 256).jpeg({ quality: 90 }).toFile(rpath)
     fs.unlinkSync(req.file.path)
   }
