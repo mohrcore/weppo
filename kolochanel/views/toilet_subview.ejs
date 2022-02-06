@@ -22,13 +22,23 @@
 
 <% } else if(tref == "Invite") { %>
     <div class="p-2 nested_toilet_subview-box" style = "max-width: 33%;">
+        <!--
         <img class="p-1 img-responsive" src="/images/add_new_box.jpg" style="width: 100%;" onclick="addToilet()">
+-->
+        <p> Dodaj nową toaletę</p>
         <form action="/userpage/addshitter/username/<%= username %>" id="addshitter" method="post">
+            <input class="form-control" name="toilet_name" type="text" placeholder="Nazwa" aria-label="default input example">
+            <input class="form-control" name="toilet_desc" type="text" placeholder="Opis" aria-label="default input example">
+            <input class="form-control" name="toilet_GPS" type="text" placeholder="KoordynatyGPS" aria-label="default input example">
+            <button type="submit" class="w-100 btn btn-primary">Dodaj Toaletę</button>
         </form>
     </div>
 <% } else { %>
     <div class="p-2 nested_toilet_subview-box" style = "width: 33%;">
-        <h5 class="p-2"><%= tref.toiletname %></h5>
+        <h4 class="p-2"><%= tref.toiletname %></h4>
+        <% if(tref.toiletdesc) { %>
+            <h6 class="p-2"><%= tref.toiletdesc %></h6>
+        <% } %>
         <div class="d-flex flex-row bd-highlight mb-3" style="flex-wrap:wrap">
             <% for(var i=0; i < tref.toiletimages.length; i++) { %>
                 <% if (tref.toiletimages[i] == "add_new") { %>

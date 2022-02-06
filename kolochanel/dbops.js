@@ -101,11 +101,12 @@ async function add_toiletimage(toiletdata, final_fname) {
   }
 }
 
-async function add_toilet_instance(userid) {
+async function add_toilet_instance(userid, toilet_name, toilet_desc) {
   let user = await User.findById(userid);
   let toilet = new Toilet({
     timestamp: new Date().getTime(),
-    toiletname: "temp"
+    toiletname: toilet_name,
+    toiletdesc: toilet_desc
   });
 
   await toilet.save();

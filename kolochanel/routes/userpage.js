@@ -39,6 +39,7 @@ function massage_shitterimages(toilet_ref) {
 
     return {
         toiletname: toilet_ref.toiletname,
+        toiletdesc: toilet_ref.toiletdesc,
         toiletimages: built_toiletmap
     }
 }
@@ -82,7 +83,7 @@ router.post('/change_profile_text/username/:username', async (req, res, next) =>
 router.post('/addshitter/username/:username', async (req, res, next) => {
     console.log(req.params, req.body)
     let user_id = await get_userid_from_username(req.params.username);
-    await add_toilet_instance(user_id);
+    await add_toilet_instance(user_id, req.body.toilet_name, req.body.toilet_desc);
     // wróć na profil
     res.redirect("/userpage/username/" + req.params.username)
 })

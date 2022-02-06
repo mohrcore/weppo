@@ -82,6 +82,7 @@ a {
 }
 
 .nested_toilet_subview-box {
+  padding-top: 100%;
   max-width: 30%;
   flex-basis: 100%;
   padding: 15px;
