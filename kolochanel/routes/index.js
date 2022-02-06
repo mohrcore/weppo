@@ -26,7 +26,7 @@ router.get('/login', function(req, res) {
   res.render('login');
 });
 
-router.post('/login_user', async (req, res, next) => {
+async function login(req, res, next) {
   let params = {
     rplace: 'login',
     error_message: 'An unknown error has occurred.'
@@ -47,7 +47,9 @@ router.post('/login_user', async (req, res, next) => {
       res.redirect('/');
     });
   })(req, res, next);
-});
+}
+
+router.post('/login_user', login);
 
 router.post('/register_user', async (req, res, next) => {
   console.log(req.body)
@@ -64,7 +66,7 @@ router.post('/register_user', async (req, res, next) => {
       res.render('registration_failed', {error_message: `Na email ${req.body.email} założone zostało już konto`, rplace: 'register'});
     }
   } else {
-    res.redirect('/');
+    await login(req, res, next);
   }
 });
 
