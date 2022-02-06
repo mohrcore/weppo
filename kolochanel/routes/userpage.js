@@ -10,10 +10,6 @@ const path = require('path');
 const sharp = require('sharp');
 const fs = require('fs');
 
-router.get('/', async(req, res, next) => {
-    res.render('user_page', {});
-});
-
 function massage_shitterimages(toilet_ref) {
     if (toilet_ref == "None" || toilet_ref == "Invite") {
         return toilet_ref
@@ -45,8 +41,8 @@ function massage_shitterimages(toilet_ref) {
 router.post('/addimage/username/:username/toiletgroup/:toiletgroup', upload.single('toiletimage'), async (req, res, next) => {
     console.log(req.params)
     console.log(req.file)
-    let fpath = '/images/resized' + req.file.filename
-    let rpath = path.resolve(req.file.destination,'resized' + req.file.filename)
+    let fpath = '/images/dyn/toilets/resized' + req.file.filename
+    let rpath = path.resolve(req.file.destination, 'dyn/toilets/resized' + req.file.filename)
     await sharp(req.file.path).resize(256, 256).jpeg({ quality: 90 }).toFile(rpath)
     fs.unlinkSync(req.file.path)
 
@@ -148,16 +144,16 @@ router.get('/username/:username', async(req, res, next) => {
     console.log("tutaj patrzymy czy to ja", req.user);
 
     pagedata = {
-        username: req.params.username,
-        user_quote: userdata.user_quote ? userdata.user_quote : "użytkownik nie napisał nic o sobie",
-        user_long_description: userdata.user_long_description ? userdata.user_long_description : "",
-        pfp_uri: userdata.pfp_uri,
-        t1_ref: massage_shitterimages(t1_ref),
-        t2_ref: massage_shitterimages(t2_ref),
-        t3_ref: massage_shitterimages(t3_ref),
-        interaction_query: inter_query,
-        interactive_page: authed_user,
-        authorized_actor: authorized_actor,
+      username: req.params.username,
+      user_quote: userdata.user_quote ? userdata.user_quote : "użytkownik nie napisał nic o sobie",
+      user_long_description: userdata.user_long_description ? userdata.user_long_description : "",
+      pfp_uri: userdata.pfp_uri,
+      t1_ref: massage_shitterimages(t1_ref),
+      t2_ref: massage_shitterimages(t2_ref),
+      t3_ref: massage_shitterimages(t3_ref),
+      interaction_query: inter_query,
+      interactive_page: authed_user,
+      authorized_actor: authorized_actor,
     }
 
     res.render('user_page', pagedata);
