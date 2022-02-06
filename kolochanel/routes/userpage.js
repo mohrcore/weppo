@@ -148,6 +148,7 @@ router.get('/username/:username', async(req, res, next) => {
         t3_ref: massage_shitterimages(t3_ref),
         interaction_query: inter_query,
         interactive_page: true,
+        authorized_actor: user_id,
     }
 
     console.log(pagedata)

@@ -121,7 +121,7 @@ router.get('/', async(req, res, next) => {
   inter_query = await get_interactions(inter_query)
   res.render(
     'interaction_wrapper', 
-    { interaction_descriptor: inter_query }
+    { interaction_descriptor: inter_query, authorized_actor: "Nikt" }
   );
 });
 
@@ -151,7 +151,7 @@ router.get('/username/:username/actor_type/:actor_type', async(req, res, next) =
 router.post('/username/:username/publish_comment', upload.single('interaction_image'), async(req, res, next) => {
   console.log("got request to publish comment", req.params, req.body, req.file);
   let fpath = null;
-  if (req.file.fieldname) {
+  if (req.file) {
     fpath = '/images/resized' + req.file.filename
     let rpath = path.resolve(req.file.destination,'resized' + req.file.filename)
     await sharp(req.file.path).resize(256, 256).jpeg({ quality: 90 }).toFile(rpath)

@@ -3,11 +3,13 @@
   <% var response_id = interaction.client_response_reference %> 
   <% var interaction_stars = interaction.host_rating_stars %> 
   <% var Tintent = "host_comments" %> 
+  <% var Bintent = "client_responds" %> 
 <% } else { %>
   <% var interaction_stars = interaction.client_rating_stars %>   
   <% var comment_id = interaction.client_comment_reference %> 
   <% var response_id = interaction.host_response_reference %> 
   <% var Tintent = "client_comments" %> 
+  <% var Bintent = "host_responds" %> 
 <% } %>
 
 <% var primary_username = user_map[primary_userid].username %> 
@@ -18,11 +20,18 @@
 <script>
     function publish(form_side, layer, author, this_interaction, intent) {
       console.log("uwu", form_side, layer, document.getElementById("interaction_image").value);
-      if(form_side == "host") {
+      if(form_side == "primary") {
           let form = document.getElementById("interaction_comment_form_ashost_" + layer);
           document.getElementById("author_userid_host_" + layer).value = author;
           document.getElementById("target_interaction_host_" + layer).value = this_interaction;
-          document.getElementById("target_interaction_intent_" + layer).value = intent;
+          document.getElementById("target_interaction_host_intent_" + layer).value = intent;
+          form.submit();
+        }
+        if(form_side == "responder") {
+          let form = document.getElementById("interaction_comment_form_asclient_" + layer);
+          document.getElementById("author_userid_client_" + layer).value = author;
+          document.getElementById("target_interaction_client_" + layer).value = this_interaction;
+          document.getElementById("target_interaction_client_intent_" + layer).value = intent;
           form.submit();
         }
       }
@@ -74,9 +83,9 @@
         </div>
         <input class="form-control" name="author_userid" id="author_userid_host_<%= layer %>" type="text" hidden>
         <input class="form-control" name="target_interaction" id="target_interaction_host_<%= layer %>" type="text" hidden>
-        <input class="form-control" name="interaction_intent" id="target_interaction_intent_<%= layer %>" type="text" hidden>
+        <input class="form-control" name="interaction_intent" id="target_interaction_host_intent_<%= layer %>" type="text" hidden>
       </form>
-      <button class="btn btn-primary" onclick="publish('host', <%= layer %>, '<%= authorized_actor %>', '<%= interaction._id%>', '<%=Tintent%>');">Opublikuj</button>
+      <button class="btn btn-primary" onclick="publish('primary', <%= layer %>, '<%= authorized_actor %>', '<%= interaction._id%>', '<%=Tintent%>');">Opublikuj</button>
 
       <% } %>
   <% } else { %>
@@ -99,7 +108,7 @@
       <% } %>
     </div>
 
-    <% if(response_id != "None") { %>
+    <% if(response_id != "None" || (response_id == "None" && authorized_actor == responder_userid)) { %>
       <!-- response body -->
       <% if(identity == "host") { %>
         <div class="nested_content_user-box">
@@ -108,16 +117,43 @@
       <% } %>
       <div class="d-flex flex-row mb-1" style="position:relative">
         <img class="rounded-circle p-1 img-responsive" src="<%= responder_pfp %>" style="width: 20%; height: 20%">
-        <% if(authorized_actor == responder_userid) { %>
-          <p>that's me!</p>
-        <% } %>
-  
         <div class="position-absolute badge rounded-pill bg-danger" style="width: 20%; translate: 60% -30%;">
           <%- include('star_rating.ejs', {rating: 1.5}) %>
-          </div>
-          <p class="p-1" style="flex-shrink: 100; align-self:flex-end;">
-            <%= responder_username %> skomentował o  <%= comment_map[response_id].timestamp %> :
-          </p>
+        </div>
+      </div>
+      <div class="p-2 bd-highlight">
+        <% if(response_id == "None" && authorized_actor == responder_userid) { %>
+          <div>
+          <form action="/interactions/username/<%= primary_username %>/publish_comment" id="interaction_comment_form_asclient_<%=layer%>" method="post" enctype="multipart/form-data">
+            <div class="d-flex flex-row mb-1" style="position:relative">
+              <div class="form-group">
+                <label for="exampleInputPassword1">Opis</label>
+                <textarea class="form-control" name="interaction_description" id="interaction_description" rows="6"></textarea>
+              </div>
+              <div class="d-flex flex-column mb-1" >
+                <div class="form-group">
+                  <p>Ocena</p>
+                  <div class="badge rounded-pill bg-secondary" style="position:relative; width: 80%;">
+                    <%- include('star_rating.ejs', {rating: 3.5}) %>
+                  </div>
+                </div>
+                <div class="custom-file">
+                  <label for="formFile" class="form-label">Załącz zdjęcie</label>
+                  <input class="form-control" type="file" name="interaction_image" id="interaction_image">
+                </div>        
+              </div>
+            </div>
+            <input class="form-control" name="author_userid" id="author_userid_client_<%= layer %>" type="text" hidden>
+            <input class="form-control" name="target_interaction" id="target_interaction_client_<%= layer %>" type="text" hidden>
+            <input class="form-control" name="interaction_intent" id="target_interaction_client_intent_<%= layer %>" type="text" hidden>
+          </form>
+          <button class="btn btn-primary" onclick="publish('responder', <%= layer %>, '<%= authorized_actor %>', '<%= interaction._id%>', '<%=Bintent%>');">Opublikuj</button>
+        </div>
+          <% } else { %>
+
+        <p class="p-1" style="flex-shrink: 100; align-self:flex-end;">
+          <%= responder_username %> skomentował o  <%= comment_map[response_id].timestamp %> :
+        </p>
         </div>
         <div class="p-2 bd-highlight">
           <% if(comment_map[response_id].resource_uri == 'None' && comment_map[response_id].content == 'None') { %>
@@ -135,7 +171,8 @@
           <% } else { %>
             <p>wtf></p>
           <% } %>
-          </div>
-          </div>
+        <% } %>
+      </div>
+      </div>
     <% } %>
   <% } %>

@@ -200,6 +200,16 @@ async function link_comment(comment_id, intent, interaction_id) {
     interaction.client_comment_reference = comment_id;
   }
 
+  if (intent == "host_responds") {
+    console.log("linking comment", comment_id, " to interaction ", interaction_id)
+    interaction.host_response_reference = comment_id;
+  }
+
+  if (intent == "client_responds") {
+    console.log("linking comment", comment_id, " to interaction ", interaction_id)
+    interaction.client_response_reference = comment_id;
+  }
+
 
   await Interaction.findByIdAndUpdate(
     interaction_id, interaction
