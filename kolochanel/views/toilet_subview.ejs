@@ -8,20 +8,26 @@
     function openDialog_3() {
         document.getElementById("submitfield_3").click();
     }
+    function addToilet() {
+        document.getElementById("addshitter").submit();
+    }
 
     document.getElementById("submitbutton_1").addEventListener('click', openDialog_1);
     document.getElementById("submitbutton_2").addEventListener('click', openDialog_2);
     document.getElementById("submitbutton_3").addEventListener('click', openDialog_3);
+
 </script>
 
 <% if(tref == "None") { %>
 
 <% } else if(tref == "Invite") { %>
-    <div class="p-2 nested_content_host-box" style = "max-width: 33%;">
-        <img class="p-1 img-responsive" src="/images/add_new_box.jpg" onclick="openDialog()" style="width: 100%;" id="submitbutton_<%=imgroup%>">
+    <div class="p-2 nested_toilet_subview-box" style = "max-width: 33%;">
+        <img class="p-1 img-responsive" src="/images/add_new_box.jpg" style="width: 100%;" onclick="addToilet()">
+        <form action="/userpage/addshitter/username/<%= username %>" id="addshitter" method="post">
+        </form>
     </div>
 <% } else { %>
-    <div class="p-2 nested_content_host-box" style = "width: 33%;">
+    <div class="p-2 nested_toilet_subview-box" style = "width: 33%;">
         <h5 class="p-2"><%= tref.toiletname %></h5>
         <div class="d-flex flex-row bd-highlight mb-3" style="flex-wrap:wrap">
             <% for(var i=0; i < tref.toiletimages.length; i++) { %>

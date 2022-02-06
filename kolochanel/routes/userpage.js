@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-const { get_userid_from_username, get_userdata, get_toiletdata, add_toiletimage, change_bio, change_desc } = require('../dbops');
+const { add_toilet_instance, get_userid_from_username, get_userdata, get_toiletdata, add_toiletimage, change_bio, change_desc } = require('../dbops');
 const { get_and_squash_interaction_query, get_interactions } = require('./interaction_view')
 mongoose.connect('mongodb://localhost:27017/kolo');
 const Schemas = require('../schemas');
@@ -22,7 +22,7 @@ function massage_shitterimages(toilet_ref) {
     if (toilet_ref == "None" || toilet_ref == "Invite") {
         return toilet_ref
     }
-    
+
     built_toiletmap = []
     for(let i in ["1", "2", "3", "4", "5", "6"]) {
         let t = "toiletimage_uri_" + i;
@@ -75,6 +75,14 @@ router.post('/change_profile_text/username/:username', async (req, res, next) =>
     if(req.body.bio_input) await change_bio(user_id, req.body.bio_input)
     if(req.body.desc_input) await change_desc(user_id, req.body.desc_input)
 
+    // wróć na profil
+    res.redirect("/userpage/username/" + req.params.username)
+})
+
+router.post('/addshitter/username/:username', async (req, res, next) => {
+    console.log(req.params, req.body)
+    let user_id = await get_userid_from_username(req.params.username);
+    await add_toilet_instance(user_id);
     // wróć na profil
     res.redirect("/userpage/username/" + req.params.username)
 })

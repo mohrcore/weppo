@@ -101,6 +101,21 @@ async function add_toiletimage(toiletdata, final_fname) {
   }
 }
 
+async function add_toilet_instance(userid) {
+  let user = await User.findById(userid);
+  let toilet = new Toilet({
+    timestamp: new Date().getTime(),
+    toiletname: "temp"
+  });
+
+  await toilet.save();
+
+  if(!user.toiletID_1) {user.toiletID_1 = toilet._id; await User.findByIdAndUpdate(userid, user); return;}
+  if(!user.toiletID_2) {user.toiletID_2 = toilet._id; await User.findByIdAndUpdate(userid, user); return;}
+  if(!user.toiletID_3) {user.toiletID_3 = toilet._id; await User.findByIdAndUpdate(userid, user); return;}
+  console.log("CRITICAL, TOILET QUOTA EXCEEDED FOR", user._id);
+}
+
 exports.create_user = create_user;
 exports.login_user = login_user;
 exports.get_userid_from_username = get_userid_from_username;
@@ -109,3 +124,4 @@ exports.get_toiletdata = get_toiletdata;
 exports.add_toiletimage = add_toiletimage;
 exports.change_bio = change_bio;
 exports.change_desc = change_desc;
+exports.add_toilet_instance = add_toilet_instance;

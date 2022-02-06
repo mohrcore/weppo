@@ -81,6 +81,16 @@ a {
   border-radius: 15px;
 }
 
+.nested_toilet_subview-box {
+  max-width: 30%;
+  flex-basis: 100%;
+  padding: 15px;
+  margin: 10px;
+  background-color: lightpink;
+  border-radius: 15px;
+}
+
+
 .nested_content_host-box {
   flex-basis: 100%;
   padding: 15px;
