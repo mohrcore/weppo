@@ -101,6 +101,32 @@ async function add_toiletimage(toiletdata, final_fname) {
   }
 }
 
+async function kill_toilet(userid, toilet_enum) {
+  let userdata = await get_userdata(userid)
+  if (toilet_enum == '1') {userdata.toiletID_1 = userdata.toiletID_2; userdata.toiletID_2 = userdata.toiletID_3; userdata.toiletID_3 = null;} 
+  if (toilet_enum == '2') {userdata.toiletID_2 = userdata.toiletID_3; userdata.toiletID_3 = null;}
+  if (toilet_enum == '3') {userdata.toiletID_3 = null;}
+
+  await User.findByIdAndUpdate(userid, userdata);
+}
+
+async function update_toilet(userid, toilet_enum, toilet_name, toilet_desc, toilet_gps_lat, toilet_gps_lon) {
+  let userdata = await get_userdata(userid)
+  let toiletdata = null;
+  if (toilet_enum == '1') toiletdata = await get_toiletdata(userdata.toiletID_1);
+  if (toilet_enum == '2') toiletdata = await get_toiletdata(userdata.toiletID_2);
+  if (toilet_enum == '3') toiletdata = await get_toiletdata(userdata.toiletID_3);
+  
+  toiletdata.toiletname = toilet_name;
+  toiletdata.toiletdesc = toilet_desc;
+  toiletdata.toiletname = toilet_name;
+  toiletdata.gps_lat = new mongoose.Types.Decimal128((+toilet_gps_lat.toString()).toFixed(4)),
+  toiletdata.gps_lon = new mongoose.Types.Decimal128((+toilet_gps_lon.toString()).toFixed(4)),
+  
+  await toiletdata.save()
+}
+
+
 async function kill_toilet_image(userid, toilettarget, imtarget) {
   let userdata = await get_userdata(userid)
   let targettoiletdata = null;
@@ -129,12 +155,15 @@ async function kill_toilet_image(userid, toilettarget, imtarget) {
   await Toilet.findByIdAndUpdate(targettoiletdata, toiletdata)
 }
 
-async function add_toilet_instance(userid, toilet_name, toilet_desc) {
+async function add_toilet_instance(userid, toilet_name, toilet_desc, toilet_lat, toilet_lon) {
+  console.log("adding toilet instance!")
   let user = await User.findById(userid);
   let toilet = new Toilet({
     timestamp: new Date().getTime(),
     toiletname: toilet_name,
-    toiletdesc: toilet_desc
+    toiletdesc: toilet_desc,
+    gps_lat: new mongoose.Types.Decimal128((+toilet_lat.toString()).toFixed(4)),
+    gps_lon: new mongoose.Types.Decimal128((+toilet_lon.toString()).toFixed(4))
   });
 
   await toilet.save();
@@ -155,3 +184,5 @@ exports.change_bio = change_bio;
 exports.change_desc = change_desc;
 exports.add_toilet_instance = add_toilet_instance;
 exports.kill_toilet_image = kill_toilet_image;
+exports.kill_toilet = kill_toilet;
+exports.update_toilet = update_toilet;

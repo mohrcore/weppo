@@ -36,6 +36,8 @@ const ToiletSchema = new mongoose.Schema({
     timestamp: {type: mongoose.Date, required: true},
     toiletname: {type: String, required: true},
     toiletdesc: {type: String, required: false},
+    gps_lat: {type: mongoose.Types.Decimal128, required: false},
+    gps_lon: {type: mongoose.Types.Decimal128, required: false},
     toiletimage_uri_1: {type: String, required: false},
     toiletimage_uri_2: {type: String, required: false},
     toiletimage_uri_3: {type: String, required: false},

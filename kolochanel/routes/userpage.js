@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-const { kill_toilet_image, add_toilet_instance, get_userid_from_username, get_userdata, get_toiletdata, add_toiletimage, change_bio, change_desc } = require('../dbops');
+const { update_toilet, kill_toilet, kill_toilet_image, add_toilet_instance, get_userid_from_username, get_userdata, get_toiletdata, add_toiletimage, change_bio, change_desc } = require('../dbops');
 const { get_and_squash_interaction_query, get_interactions } = require('./interaction_view')
 mongoose.connect('mongodb://localhost:27017/kolo');
 const Schemas = require('../schemas');
@@ -39,8 +39,10 @@ function massage_shitterimages(toilet_ref) {
 
     return {
         toiletname: toilet_ref.toiletname,
-        toiletdesc: toilet_ref.toiletdesc,
-        toiletimages: built_toiletmap
+        toiletdesc: toilet_ref.toiletdesc ? toilet_ref.toiletdesc : "None",
+        gps_lat: toilet_ref.gps_lat ? toilet_ref.gps_lat : "None",
+        gps_lon: toilet_ref.gps_lon ? toilet_ref.gps_lon : "None",
+        toiletimages: built_toiletmap,
     }
 }
 
@@ -90,10 +92,39 @@ router.post('/change_profile_text/username/:username', async (req, res, next) =>
 router.post('/addshitter/username/:username', async (req, res, next) => {
     console.log(req.params, req.body)
     let user_id = await get_userid_from_username(req.params.username);
-    await add_toilet_instance(user_id, req.body.toilet_name, req.body.toilet_desc);
+    await add_toilet_instance(
+        user_id, 
+        req.body.toilet_name, 
+        req.body.toilet_desc, 
+        req.body.toilet_GPS_lat, 
+        req.body.toilet_GPS_lon
+    );
     // wróć na profil
     res.redirect("/userpage/username/" + req.params.username)
 })
+
+router.post('/modtoilet/username/:username', async (req, res, next) => {
+    console.log("in endpoint modtoilet with", req.params, req.body)
+
+    let user_id = await get_userid_from_username(req.params.username);
+
+    if(req.body.modtoilet_kill && req.body.modtoilet_kill == "True") {
+        await kill_toilet(user_id, req.body.modtoilet_target);
+        res.redirect("/userpage/username/" + req.params.username)
+    }
+
+    await update_toilet(
+        user_id, 
+        req.body.modtoilet_target,
+        req.body.modtoilet_name,
+        req.body.modtoilet_desc,
+        req.body.modtoilet_gps_lat,
+        req.body.modtoilet_gps_lon,
+    );
+    // wróć na profil
+    res.redirect("/userpage/username/" + req.params.username)
+})
+
 
 /* GET home page. */
 router.get('/username/:username', async(req, res, next) => {
