@@ -16,25 +16,31 @@
 
 <% if(tref == "None") { %>
 
+<% } else if(tref == "Invite") { %>
+    <div class="p-2 nested_content_host-box" style = "max-width: 33%;">
+        <img class="p-1 img-responsive" src="/images/add_new_box.jpg" onclick="openDialog()" style="width: 100%;" id="submitbutton_<%=imgroup%>">
+    </div>
 <% } else { %>
-    <h5 class="p-2"><%= tref.toiletname %></h5>
-    <div class="d-flex flex-row bd-highlight mb-3" style="flex-wrap:wrap">
-        <% for(var i=0; i < tref.toiletimages.length; i++) { %>
-            <% if (tref.toiletimages[i] == "add_new") { %>
-                <% if (interactive_page == true) { %>
-                    <img class="p-1 img-responsive" src="/images/add_new_box.jpg" onclick="openDialog()" style="width: 33%;" id="submitbutton_<%=imgroup%>">
+    <div class="p-2 nested_content_host-box" style = "width: 33%;">
+        <h5 class="p-2"><%= tref.toiletname %></h5>
+        <div class="d-flex flex-row bd-highlight mb-3" style="flex-wrap:wrap">
+            <% for(var i=0; i < tref.toiletimages.length; i++) { %>
+                <% if (tref.toiletimages[i] == "add_new") { %>
+                    <% if (interactive_page == true) { %>
+                        <img class="p-1 img-responsive" src="/images/add_new_box.jpg" onclick="openDialog()" style="width: 33%;" id="submitbutton_<%=imgroup%>">
 
-                    <form action="/userpage/addimage/username/<%= username %>/toiletgroup/<%= imgroup %>" method="post" enctype="multipart/form-data">
-                        <input type="file" name="toiletimage" id="submitfield_<%=imgroup%>" onchange="this.form.submit();" hidden/>
-                    </form>
-                <% } else { %>
+                        <form action="/userpage/addimage/username/<%= username %>/toiletgroup/<%= imgroup %>" method="post" enctype="multipart/form-data">
+                            <input type="file" name="toiletimage" id="submitfield_<%=imgroup%>" onchange="this.form.submit();" hidden/>
+                        </form>
+                    <% } else { %>
+                        <img class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
+                    <% } %>
+                <% } else if (tref.toiletimages[i] == "empty") { %>
                     <img class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
-                <% } %>
-            <% } else if (tref.toiletimages[i] == "empty") { %>
-                <img class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
-            <% } else { %>
-                <img class="p-1 img-responsive" src="<%= tref.toiletimages[i] %>" style="width: 33%;">
-                <% } %>
-        <% } %>
+                <% } else { %>
+                    <img class="p-1 img-responsive" src="<%= tref.toiletimages[i] %>" style="width: 33%;">
+                    <% } %>
+            <% } %>
+        </div>
     </div>
 <% } %>

@@ -19,6 +19,10 @@ router.get('/', async(req, res, next) => {
 });
 
 function massage_shitterimages(toilet_ref) {
+    if (toilet_ref == "None" || toilet_ref == "Invite") {
+        return toilet_ref
+    }
+    
     built_toiletmap = []
     for(let i in ["1", "2", "3", "4", "5", "6"]) {
         let t = "toiletimage_uri_" + i;
@@ -86,7 +90,11 @@ router.get('/username/:username', async(req, res, next) => {
     let query_hint = {$or: [{client_userid: user_id}, {host_userid: user_id}]};
     let inter_query = await get_and_squash_interaction_query(query_hint)
     inter_query = await get_interactions(inter_query, res)
-    
+    console.log(t1_ref, t2_ref, t3_ref)
+    if(t1_ref == "None") {t1_ref = "Invite"; t2_ref = "None"; t3_ref = "None";} else
+    if(t2_ref == "None") {t2_ref = "Invite"; t3_ref = "None";} else
+    if(t3_ref == "None") {t3_ref = "Invite";}
+
     pagedata = {
         username: req.params.username,
         user_quote: userdata.user_quote ? userdata.user_quote : "użytkownik nie napisał nic o sobie",

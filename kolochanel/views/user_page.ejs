@@ -43,15 +43,9 @@
         </div>
         <h2 class="p-2">PRZEGLĄD ARMATURY</h2>
         <div class="p-2 d-flex flex-row bd-highlight mb-3">
-          <div class="p-2 nested_content_host-box">
             <%- include('toilet_subview.ejs', {tref: t1_ref, interactive_page: interactive_page, username: username, imgroup:"1"}) %>
-          </div>
-          <div class="p-2 nested_content_host-box">
             <%- include('toilet_subview.ejs', {tref: t2_ref, interactive_page: interactive_page, username: username, imgroup:"2"}) %>
-          </div>
-          <div class="p-2 nested_content_host-box">
             <%- include('toilet_subview.ejs', {tref: t3_ref, interactive_page: interactive_page, username: username, imgroup:"3"}) %>
-          </div>
         </div>
         <h2 class="p-2">PRZEGLĄD KOMENTARZY</h2>
         <%- include('interaction_top.ejs',{interaction_descriptor: interaction_query}) %>
