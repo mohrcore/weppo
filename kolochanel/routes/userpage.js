@@ -124,6 +124,9 @@ router.post('/modtoilet/username/:username', async (req, res, next) => {
 
 /* GET home page. */
 router.get('/username/:username', async(req, res, next) => {
+    if(req.params.username == 'undefined')
+        return // some weirdness goind on.
+
     let user_id = await get_userid_from_username(req.params.username);
     let userdata = await get_userdata(user_id)
     let t1_ref = await userdata.toiletID_1 ? await get_toiletdata(userdata.toiletID_1) : "None";

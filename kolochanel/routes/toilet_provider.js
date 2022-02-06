@@ -34,7 +34,8 @@ async function get_payload_for_toiletid(toiletid) {
 }
 
 /* GET users listing. */
-router.get('/', async function(req, res, next) {
+router.get('/get_toilet', async function(req, res, next) {
+  console.log(res.user)
   console.log("endpoint_called!")
 
   let sampleid = mongoose.Types.ObjectId('61ffee0236ad9989cd626efa');

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">    <link rel='stylesheet' href='/stylesheets/style.css' />
     <script>
+      let matchmaking_session = null;
       function callback(arg) {
         console.log(arg);
       }
@@ -12,7 +13,7 @@
       function render_modal(data) {
         document.getElementById("modal_contents").hidden = false;
 
-        document.getElementById("modal_toilet_bio").innerHTML = data.username;
+        document.getElementById("modal_toilet_bio").innerHTML = data.toiletname;
         document.getElementById("modal_toilet_sub_bio").innerHTML = data.toiletdesc;
         document.getElementById("modal_username").innerHTML = data.username;
         document.getElementById("modal_bio").innerHTML = data.user_quote;
@@ -39,7 +40,7 @@
         document.getElementById("modal_label_2").hidden = true;
         document.getElementById("modal_label_3").hidden = true;
 
-        fetch('/endpoint')
+        fetch('/endpoint/get_toilet')
         .then(response => response.json())
         .then(response => {
           console.log(response)
