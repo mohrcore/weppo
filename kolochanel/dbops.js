@@ -84,9 +84,19 @@ async function change_desc(userid, new_desc) {
 }
 
 
+async function get_owner_of_toilet(toiletid) {
+  let user = await User.findOne({$or: [
+    {toiletID_1: toiletid}, 
+    {toiletID_2: toiletid}, 
+    {toiletID_3: toiletid}
+  ]});
+
+  return user
+}
+
+
 async function get_toiletdata(toiletid) {
   let toilet = await Toilet.findById(toiletid)
-  console.log(toilet)
   return toilet
 }
 
@@ -251,3 +261,4 @@ exports.update_toilet = update_toilet;
 exports.make_comment = make_comment;
 exports.link_comment = link_comment;
 exports.rate_interaction = rate_interaction;
+exports.get_owner_of_toilet = get_owner_of_toilet;

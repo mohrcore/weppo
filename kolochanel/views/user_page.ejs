@@ -5,12 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">    <link rel='stylesheet' href='/stylesheets/style.css' />
     <script>
-    </script>
+      function callback(arg) {
+        console.log(arg);
+      }
+
+      function render_modal(data) {
+        document.getElementById("modal_contents").hidden = false;
+
+        document.getElementById("modal_toilet_bio").innerHTML = data.username;
+        document.getElementById("modal_toilet_sub_bio").innerHTML = data.toiletdesc;
+        document.getElementById("modal_username").innerHTML = data.username;
+        document.getElementById("modal_bio").innerHTML = data.user_quote;
+        document.getElementById("modal_userlong_bio").innerHTML = data.user_long_description;
+
+        document.getElementById("modal_pfp").src = data.pfp_uri;
+        for(let i of ["1", "2", "3", "4", "5", "6"]) {
+          document.getElementById("modal_toiletimage_" + i).src = data.toilet_images[Number(i) - 1];
+        }
+      }
+
+      function confirm_gps() {
+        console.log()
+        document.getElementById("modal_confirm_btn").hidden = true;
+        document.getElementById("modal_yes_btn").hidden = false;
+        document.getElementById("modal_no_btn").hidden = false;
+
+        document.getElementById("fld_gps_lon").hidden = true;
+        document.getElementById("fld_gps_lat").hidden = true;
+        document.getElementById("fld_gps_lon").hidden = true;
+        document.getElementById("fld_gps_lat").hidden = true;
+
+        document.getElementById("modal_label_1").hidden = true;
+        document.getElementById("modal_label_2").hidden = true;
+        document.getElementById("modal_label_3").hidden = true;
+
+        fetch('/endpoint')
+        .then(response => response.json())
+        .then(response => {
+          console.log(response)
+          render_modal(response)
+        });
+      }
+  </script>
   </head>
   <body>
     <div class="content-box-profile">
+      <button type="button" class="w-100 btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+        <h1>SRANIE</h1>
+      </button>
       <div class="content-floating">
-        <h1 style="text-align:center">KOLO CHANEL</h1>
+          <h1 style="text-align:center">KOLO CHANEL</h1>
       </div>
       <div class="content-floating">
         <h6 style="text-align:center">Podgląd profilu</h6>
@@ -51,6 +95,59 @@
         <%- include('interaction_top.ejs', {interaction_descriptor: interaction_query, authorized_actor: authorized_actor}) %>
         </div>
       </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Wyszukiwarka profili</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p id="modal_label_3">Wprowadź swoją pozycję GPS</p>
+            <textarea class="form-control" id="fld_gps_lat" name="fld_gps_lat" rows="1"></textarea>
+            <label id="modal_label_2" for="fld_gps_lat">Długość geograficzna</label>
+            <textarea class="form-control" id="fld_gps_lon" name="fld_gps_lon" rows="1"></textarea>
+            <label id="modal_label_1" for="fld_gps_lon">Szerokość geograficzna</label>
+
+            <div id="modal_contents" hidden>
+              <div class="p-2 nested_content_host-box">
+                <div class="d-flex flex-row bd-highlight mb-3">
+                  <img id="modal_pfp" class="p-1 img-responsive rounded-circle" src="/images/empty_box.jpg" style="width: 40%; height: 40%">
+                  <div class="d-flex flex-column bd-highlight mb-3">
+                    <div class="p-2"><h1 id="modal_username">test</h1></div>
+                    <div class="p-2"><h3 id="modal_bio">test</h3></div>
+                  </div>
+                </div>
+                <div class="p-2"><h5 id="modal_userlong_bio">test</h5></div>
+
+              </div>
+              <!-- view toalety-->
+              <div class="p-2 nested_content_host-box">
+                <h4 id="modal_toilet_bio"></h4>
+                <h6 id="modal_toilet_sub_bio"></h6>
+
+                <div class="d-flex flex-row bd-highlight mb-3" style="flex-wrap:wrap">
+                  <img id = "modal_toiletimage_1" class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
+                  <img id = "modal_toiletimage_2" class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
+                  <img id = "modal_toiletimage_3" class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
+                  <img id = "modal_toiletimage_4" class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
+                  <img id = "modal_toiletimage_5" class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
+                  <img id = "modal_toiletimage_6" class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="modal_confirm_btn" class="btn btn-success" data-dismiss="modal" onclick="confirm_gps()">Potwierdź</button>
+            <button type="button" id="modal_yes_btn" class="btn btn-danger" style="width:45%" data-dismiss="modal" hidden>Wolę nie</button>
+            <button type="button" id="modal_no_btn" class="btn btn-success" style="width:45%" data-dismiss="modal" hidden>Chętnie!</button>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -12,6 +12,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var interactionRouter = require('./routes/interaction_view');
 var userpageRouter = require('./routes/userpage');
+var endpointRouter = require('./routes/toilet_provider');
 
 /* passport.use(localauth.strategy);
 passport.deserializeUser(localauth.deserializeUser);
@@ -40,6 +41,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/interactions', interactionRouter);
 app.use('/userpage', userpageRouter);
+app.use('/endpoint', endpointRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
