@@ -191,6 +191,21 @@ async function make_comment(author, contents, resource_uri) {
   return comment._id;
 }
 
+async function rate_interaction(intent, interaction_id, rating) {
+  let interaction = await Interaction.findById(interaction_id)
+  if(intent == "client_comments") {
+    interaction.client_rating_stars = rating;
+  }
+  
+  if(intent == "host_comments") {
+    interaction.host_rating_stars = rating;
+  }
+
+  await Interaction.findByIdAndUpdate(
+    interaction_id, interaction
+  );
+}
+
 async function link_comment(comment_id, intent, interaction_id) {
   let interaction = await Interaction.findById(interaction_id)
 
@@ -235,3 +250,4 @@ exports.kill_toilet = kill_toilet;
 exports.update_toilet = update_toilet;
 exports.make_comment = make_comment;
 exports.link_comment = link_comment;
+exports.rate_interaction = rate_interaction;

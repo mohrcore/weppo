@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-const { link_comment, make_comment, get_userid_from_username } = require('../dbops');
+const { link_comment, make_comment, get_userid_from_username, rate_interaction } = require('../dbops');
 const multer  = require('multer')
 const upload = multer({ dest: 'public/images/' })
 const path = require('path');
@@ -169,8 +169,13 @@ router.post('/username/:username/publish_comment', upload.single('interaction_im
     mongoose.Types.ObjectId(req.body.target_interaction)
   )
   
+  await rate_interaction(
+    req.body.interaction_intent,
+    mongoose.Types.ObjectId(req.body.target_interaction),
+    req.body.interaction_stars,
+  )
 
-  res.redirect("/interactions/username/studentka_politologii/actor_type/both")
+  res.redirect(req.body.take_me_home)
 });
 
 module.exports = router;

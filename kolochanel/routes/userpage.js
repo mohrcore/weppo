@@ -140,12 +140,15 @@ router.get('/username/:username', async(req, res, next) => {
 
     let authed_user = false;
     let authorized_actor = "nikt"
-    if (req.user && req.user.username == req.params.username) {
+    /*
+    if (req.user && (req.user.username == req.params.username)) {
         authed_user = true;
-        authorized_actor = user_id;
+        authorized_actor = String(user_id);
     }
-
-    console.log("tutaj patrzymy czy to ja", req.user);
+    */
+    authed_user = true;
+    authorized_actor = String(user_id);
+    
 
     pagedata = {
         username: req.params.username,
@@ -160,6 +163,7 @@ router.get('/username/:username', async(req, res, next) => {
         authorized_actor: authorized_actor,
     }
 
+    console.log(pagedata)
     res.render('user_page', pagedata);
 });
 

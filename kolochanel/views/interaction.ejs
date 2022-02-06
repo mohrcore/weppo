@@ -16,6 +16,7 @@
 <% var responder_username = user_map[responder_userid].username %> 
 <% var primary_pfp = user_map[primary_userid].pfp_uri %> 
 <% var responder_pfp = user_map[responder_userid].pfp_uri %> 
+<% var starhandle_top = "starhandle_top_" + layer %> 
 
 <script>
     function publish(form_side, layer, author, this_interaction, intent) {
@@ -25,6 +26,9 @@
           document.getElementById("author_userid_host_" + layer).value = author;
           document.getElementById("target_interaction_host_" + layer).value = this_interaction;
           document.getElementById("target_interaction_host_intent_" + layer).value = intent;
+          let starvalue = document.getElementById("star_vvalue_starhandle_top_" + layer).value;
+          document.getElementById("target_interaction_host_stars_" + layer).value = starvalue;
+          document.getElementById("target_interaction_host_take_me_home_" + layer).value = window.location.href;
           form.submit();
         }
         if(form_side == "responder") {
@@ -32,9 +36,30 @@
           document.getElementById("author_userid_client_" + layer).value = author;
           document.getElementById("target_interaction_client_" + layer).value = this_interaction;
           document.getElementById("target_interaction_client_intent_" + layer).value = intent;
+          document.getElementById("target_interaction_client_take_me_home_" + layer).value = window.location.href;
           form.submit();
         }
       }
+
+    function clickon_star(handle) {
+      let handlesplit = handle.split("_");
+      let nscore = Number(handlesplit[1]) + 2;
+      let interaction_ptr = Number(handlesplit[4]); 
+      let interaction_side = handlesplit[3];
+      
+      let path = "star_vvalue_starhandle_" + interaction_side + "_" + interaction_ptr;
+      console.log(path)
+      let formkeep = document.getElementById(path);
+      formkeep.value = nscore;
+      for(let i of [2, 4, 6, 8, 10]) {
+        console.log("star_" + String(i-2) + "_starhandle_" + interaction_side + "_" + interaction_ptr)
+        if(nscore >= i) {
+          document.getElementById("star_" + String(i-2) + "_starhandle_" + interaction_side + "_" + interaction_ptr).src = "/images/icons/star-fill.svg";
+        } else {
+          document.getElementById("star_" + String(i-2) + "_starhandle_" + interaction_side + "_" + interaction_ptr).src = "/images/icons/star.svg";
+        }
+      }
+    }
 </script>
 
 <div class="d-flex flex-column mb-3">
@@ -44,15 +69,17 @@
 
       <img class="rounded-circle p-1 img-responsive" src="<%= primary_pfp %>" style="width: 20%; height: 20%">
       <div class="position-absolute badge rounded-pill bg-danger" style="width: 20%; translate: 60% -30%;">
-        <%- include('star_rating.ejs', {rating: 3.5}) %>
+        <%- include('star_rating.ejs', {rating: 3.5, starhandle: "None"}) %>
       </div>
 
       <% if(comment_id != "None") { %>
+        <% if(comment_map[comment_id].resource_uri != 'None' || comment_map[comment_id].content != 'None') { %>
       <p class="p-1" style="flex-shrink: 100; align-self:flex-end;">
         <%= primary_username %> skomentował <%= comment_map[comment_id].timestamp %>:
       </p>
+      <% } %>
       <div class="badge rounded-pill bg-secondary" style="position:absolute; width: 32%; top:0rem; right:0rem">
-        <%- include('star_rating.ejs', {rating: interaction_stars}) %>
+        <%- include('star_rating.ejs', {rating: interaction_stars /2, starhandle: "None"}) %>
       </div>
       <% } %>
       <!-- interaction rating from client -->
@@ -71,8 +98,8 @@
           <div class="d-flex flex-column mb-1" >
             <div class="form-group">
               <p>Ocena</p>
-              <div class="badge rounded-pill bg-secondary" style="position:relative; width: 80%;">
-                <%- include('star_rating.ejs', {rating: 3.5}) %>
+              <div class="badge rounded-pill bg-success" style="position:relative; width: 80%;">
+                <%- include('star_rating.ejs', {rating: 3.5, starhandle: starhandle_top}) %>
               </div>
             </div>
             <div class="custom-file">
@@ -84,6 +111,9 @@
         <input class="form-control" name="author_userid" id="author_userid_host_<%= layer %>" type="text" hidden>
         <input class="form-control" name="target_interaction" id="target_interaction_host_<%= layer %>" type="text" hidden>
         <input class="form-control" name="interaction_intent" id="target_interaction_host_intent_<%= layer %>" type="text" hidden>
+        <input class="form-control" name="interaction_stars" id="target_interaction_host_stars_<%= layer %>" type="text" hidden>
+        <input class="form-control" name="take_me_home" id="target_interaction_host_take_me_home_<%= layer %>" type="text" hidden>
+
       </form>
       <button class="btn btn-primary" onclick="publish('primary', <%= layer %>, '<%= authorized_actor %>', '<%= interaction._id%>', '<%=Tintent%>');">Opublikuj</button>
 
@@ -92,8 +122,6 @@
   <!-- comment body -->
     <div class="p-2 bd-highlight">
       <% if(comment_map[comment_id].resource_uri == 'None' && comment_map[comment_id].content == 'None') { %>
-        <p>wtf?</p>
-      <%= comment_map[comment_id].content %> 
       <% } else if(comment_map[comment_id].resource_uri != 'None' && comment_map[comment_id].content == 'None') { %>
         <img class="p-2 bd-highlight img-responsive" src="<%= comment_map[comment_id].resource_uri %>" style="max-width: 30%;">
       <% } else if(comment_map[comment_id].resource_uri == 'None' && comment_map[comment_id].content != 'None') { %>
@@ -104,7 +132,6 @@
           <img class="p-2 bd-highlight img-responsive" src="<%= comment_map[comment_id].resource_uri %>" style="max-width: 30%;">
         </div>
       <% } else { %>
-        <p>wtf></p>
       <% } %>
     </div>
 
@@ -118,7 +145,7 @@
       <div class="d-flex flex-row mb-1" style="position:relative">
         <img class="rounded-circle p-1 img-responsive" src="<%= responder_pfp %>" style="width: 20%; height: 20%">
         <div class="position-absolute badge rounded-pill bg-danger" style="width: 20%; translate: 60% -30%;">
-          <%- include('star_rating.ejs', {rating: 1.5}) %>
+          <%- include('star_rating.ejs', {rating: 1.5, starhandle: "None"}) %>
         </div>
       </div>
       <div class="p-2 bd-highlight">
@@ -131,12 +158,6 @@
                 <textarea class="form-control" name="interaction_description" id="interaction_description" rows="6"></textarea>
               </div>
               <div class="d-flex flex-column mb-1" >
-                <div class="form-group">
-                  <p>Ocena</p>
-                  <div class="badge rounded-pill bg-secondary" style="position:relative; width: 80%;">
-                    <%- include('star_rating.ejs', {rating: 3.5}) %>
-                  </div>
-                </div>
                 <div class="custom-file">
                   <label for="formFile" class="form-label">Załącz zdjęcie</label>
                   <input class="form-control" type="file" name="interaction_image" id="interaction_image">
@@ -146,6 +167,9 @@
             <input class="form-control" name="author_userid" id="author_userid_client_<%= layer %>" type="text" hidden>
             <input class="form-control" name="target_interaction" id="target_interaction_client_<%= layer %>" type="text" hidden>
             <input class="form-control" name="interaction_intent" id="target_interaction_client_intent_<%= layer %>" type="text" hidden>
+            <input class="form-control" name="interaction_stars" id="target_interaction_client_stars_<%= layer %>" type="text" hidden>
+            <input class="form-control" name="take_me_home" id="target_interaction_client_take_me_home_<%= layer %>" type="text" hidden>
+
           </form>
           <button class="btn btn-primary" onclick="publish('responder', <%= layer %>, '<%= authorized_actor %>', '<%= interaction._id%>', '<%=Bintent%>');">Opublikuj</button>
         </div>
