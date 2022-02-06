@@ -1,2 +1,0 @@
-{"_id":{"$oid":"61fe7bcdd7825115a3a6de28"},"timestamp":{"$date":"2022-02-05T13:29:49.854Z"},"toiletname":"Moja główna toaleta","toiletimage_uri_1":"/images/bad_toilet_response.jpg","__v":0}
-{"_id":{"$oid":"61fe7bcdd7825115a3a6de11"},"timestamp":{"$date":"2022-02-05T13:29:49.854Z"},"toiletname":"Moja inna toaleta (lepsza)","toiletimage_uri_1":"/images/bad_toilet.jpg","__v":0}
