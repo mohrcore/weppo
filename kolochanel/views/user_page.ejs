@@ -20,9 +20,24 @@
           <div class="d-flex flex-row bd-highlight mb-3">
             <img class="p-1 img-responsive" src="<%= pfp_uri %>" style="width: 45%; height: 45%">
             <div class="p-2 nested_content_host-box">
-              <h1 class="p-2"> <%= username %> </h1>
-              <h3 class="p-2"> <%= user_quote %> </h3>
-              <h5 class="p-2"> <%= user_long_description %> </h5>
+              <div class="p-2 d-flex flex-row bd-highlight mb-3" style="align-items: stretch;">
+                <% if(interactive_page) { %>
+                <img src="/images/icons/pencil-square.svg" class="p-1 img-responsive" style="width: 7%; height: 7%" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <% } %>
+                <h1 class="p-2"> <%= username %> </h1>
+              </div>
+              <div class="p-2 d-flex flex-row bd-highlight mb-3" style="align-items: stretch;">
+                <% if(interactive_page) { %>
+                <img src="/images/icons/pencil-square.svg" class="p-1 img-responsive" style="width: 5%; height: 5%" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                <% } %>
+                <h3 class="p-2"> <%= user_quote %> </h3>
+              </div>
+              <div class="p-2 d-flex flex-row bd-highlight mb-3" style="align-items: stretch;">
+                <% if(interactive_page) { %>
+                <img src="/images/icons/pencil-square.svg" class="p-1 img-responsive" style="width: 4%; height: 4%" data-bs-toggle="modal" data-bs-target="#exampleModal3">
+                <% } %>
+                <h5 class="p-2"> <%= user_long_description %> </h5>
+              </div>
             </div>
           </div>
         </div>
@@ -40,11 +55,77 @@
         </div>
         <h2 class="p-2">PRZEGLĄD KOMENTARZY</h2>
         <%- include('interaction_top.ejs',{interaction_descriptor: interaction_query}) %>
-
         </div>
       </div>
       </div>
     </div>
+
+    <!--nie wiem jak to zrobić dobrze, modal od zmiany loginu-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Zmiana loginu</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Ten feature nie jest jeszcze wspierany!
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+            <button type="button" class="btn btn-primary">Zapisz</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--nie wiem jak to zrobić dobrze, modal od zmiany bio-->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModal2Label" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModal2Label">Zmiana Bio</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="form-floating">
+                <form action="/userpage/change_profile_text/username/<%= username %>" id="bio_input" name="bio_input" method = "POST">
+                  <textarea class="form-control" placeholder="Leave a comment here" form="bio_input" id="bio_input" name="bio_input" rows="1"></textarea>
+                  <label for="bio_input">Lorem ipsum dolor sit amet, consectetur adipiscing elit</label>
+                </form>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+              <button type="submit" form="bio_input" class="btn btn-primary">Zapisz</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <!--nie wiem jak to zrobić dobrze, modal od zmiany długiego bio-->
+    <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModal3Label" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModal3Label">Zmiana Opisu</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-floating">
+              <form action="/userpage/change_profile_text/username/<%= username %>" id="desc_input" name="desc_input" method = "POST">
+                <textarea class="form-control" placeholder="Leave a comment here" form="desc_input" id="desc_input" name="desc_input" rows="1"></textarea>
+                <label for="desc_input">Lorem ipsum dolor sit amet, consectetur adipiscing elit, zmiana długiego opisu</label>
+              </form>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+            <button type="submit" form="desc_input" class="btn btn-primary">Zapisz</button>
+          </div>
+        </div>
+      </div>
+  </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>  
   </body>
 </html>

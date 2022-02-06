@@ -68,6 +68,19 @@ async function get_userdata(userid) {
   return user
 }
 
+async function change_bio(userid, new_bio) {
+  let user = await User.findById(userid);
+  user.user_quote = new_bio;
+  await User.findByIdAndUpdate(userid, user);
+}
+
+async function change_desc(userid, new_desc) {
+  let user = await User.findById(userid);
+  user.user_long_description = new_desc;
+  await User.findByIdAndUpdate(userid, user);
+}
+
+
 async function get_toiletdata(toiletid) {
   let toilet = await Toilet.findById(toiletid)
   console.log(toilet)
@@ -94,3 +107,5 @@ exports.get_userid_from_username = get_userid_from_username;
 exports.get_userdata = get_userdata;
 exports.get_toiletdata = get_toiletdata;
 exports.add_toiletimage = add_toiletimage;
+exports.change_bio = change_bio;
+exports.change_desc = change_desc;
