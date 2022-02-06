@@ -39,10 +39,12 @@ router.get('/get_toilet/username/:username', async function(req, res, next) {
   console.log(req.params)
   console.log("endpoint_called!")
   let matches = await get_available_matches(req.params.username)
-  console.log(matches)
-  console.log(matches[0])
-  let payload = await get_payload_for_toiletid(matches[0].proposed_toilet, matches[0].validation_token);
-  res.send(JSON.stringify(payload))
+  if (matches.length > 0) {
+    let payload = await get_payload_for_toiletid(matches[0].proposed_toilet, matches[0].validation_token);
+    res.send(JSON.stringify(payload))  
+  } else {
+    res.send(JSON.stringify({done: "done"}))
+  }
 });
 
 router.post('/submit_result', async function(req, res, next) {
@@ -50,6 +52,8 @@ router.post('/submit_result', async function(req, res, next) {
   await register_matchresult(
     req.body.form_token, req.body.form_decision
   )
+
+  res.status(204).send();
 });
 
 

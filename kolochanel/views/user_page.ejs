@@ -30,7 +30,16 @@
         .then(response => response.json())
         .then(response => {
           console.log(response)
-          render_modal(response)
+          if (response.done) {
+            document.getElementById("modal_contents").hidden = true;
+            document.getElementById("modal_confirm_btn").hidden = true;
+            document.getElementById("modal_yes_btn").hidden = true;
+            document.getElementById("modal_no_btn").innerHTML = "Wróć do profilu";
+            document.getElementById("modal_label_3").hidden = false;
+            document.getElementById("modal_label_3").innerHTML = "To na razie wszystko";
+          } else {
+            render_modal(response)
+          }
         });
       }
 

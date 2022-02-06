@@ -96,10 +96,11 @@ async function produce_matches(userid) {
   let used_toilets = new Set()
   let umatches = await Match.find({proposed_client: userid, ranked: true})
   for(let m of umatches)
-    used_toilets.add(m.proposed_toilet)
+    used_toilets.add(String(m.proposed_toilet._id))
 
+  console.log(used_toilets)
   for(let t of toilets)
-    if(!used_toilets.has(t._id)) {
+    if(!used_toilets.has(String(t._id))) {
       let towner = await get_owner_of_toilet(t._id);
       console.log("AAAAAAAAAAAAAAAAAAAAA", towner._id, userid)
       if(String(towner._id) != String(userid)) {
