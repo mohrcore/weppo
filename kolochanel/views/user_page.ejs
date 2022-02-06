@@ -14,7 +14,11 @@
         document.getElementById("modal_contents").hidden = false;
 
         document.getElementById("modal_toilet_bio").innerHTML = data.toiletname;
-        document.getElementById("modal_toilet_sub_bio").innerHTML = data.toiletdesc;
+        if(data.toiletdesc) {
+          document.getElementById("modal_toilet_sub_bio").innerHTML = data.toiletdesc;
+        } else {
+          document.getElementById("modal_toilet_sub_bio").innerHTML = "Użytkownik nic nie napisał o toalecie";
+        }
         document.getElementById("modal_username").innerHTML = data.username;
         document.getElementById("modal_bio").innerHTML = data.user_quote;
         if(data.user_long_description) {
@@ -25,6 +29,10 @@
 
         document.getElementById("modal_token").innerHTML = data.validation_token;
         document.getElementById("modal_pfp").src = data.pfp_uri;
+        document.getElementById("modal_pfp").onclick = function() {
+          window.location.href='/userpage/username/' + data.username;
+        }
+
         for(let i of ["1", "2", "3", "4", "5", "6"]) {
           document.getElementById("modal_toiletimage_" + i).src = data.toilet_images[Number(i) - 1];
         }
@@ -77,9 +85,16 @@
   </head>
   <body>
     <div class="content-box-profile">
-      <button type="button" class="w-100 btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
-        <h1>SRANIE</h1>
+      <% if(interactive_page) { %>
+      <button type="button" class="w-100 btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">  
+        <h1>szukaj użytkowników w pobliżu!</h1>
       </button>
+      <% } else if(logged_user != "None") {%>
+        <button type="button" class="w-100 btn btn-primary" onclick="window.location.href='/userpage/username/<%=logged_user%>'">  
+          <h1>Powróć na swój profil</h1>
+        </button>  
+      <% } %>
+
       <div class="content-floating">
           <h1 style="text-align:center">KOLO CHANEL</h1>
       </div>

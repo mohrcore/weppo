@@ -10,9 +10,10 @@ router.get('/', function(req, res, next) {
     login_status: 'Not logged-in'
   };
 
-  if (req.user != undefined)
+  if (req.user != undefined) {
     t.login_status = 'Logged-in as ' + req.user.username;
-
+    res.redirect('/userpage/username/' + req.user.username);
+  }
   console.log(req.user);
 
   res.render('index', t);
