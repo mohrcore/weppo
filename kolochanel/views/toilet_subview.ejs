@@ -16,6 +16,12 @@
     document.getElementById("submitbutton_2").addEventListener('click', openDialog_2);
     document.getElementById("submitbutton_3").addEventListener('click', openDialog_3);
 
+    function killimage(imgroup, imid) {
+        console.log("kill", imgroup, imid)
+        document.getElementById("killimage_boxtarget").value = imgroup;
+        document.getElementById("killimage_imtarget").value = imid;
+        document.getElementById("killimage").submit();
+    }
 </script>
 
 <% if(tref == "None") { %>
@@ -54,8 +60,17 @@
                 <% } else if (tref.toiletimages[i] == "empty") { %>
                     <img class="p-1 img-responsive" src="/images/empty_box.jpg" style="width: 33%;">
                 <% } else { %>
-                    <img class="p-1 img-responsive" src="<%= tref.toiletimages[i] %>" style="width: 33%;">
-                    <% } %>
+                    <form style="position:absolute" action="/userpage/killimage/username/<%= username %>" id="killimage" method="post" hidden>
+                        <input class="form-control" name="killimage_boxtarget" id="killimage_boxtarget" type="text" hidden>
+                        <input class="form-control" name="killimage_imtarget" id="killimage_imtarget" type="text" hidden>
+                    </form>
+                    <div class="p-1 img-responsive" style="width: 33%;">
+                        <img class="p-1 img-responsive" style="width: 100%;" src="<%= tref.toiletimages[i] %>">
+                        <% if (interactive_page == true) { %>   <!-- to rzuca błędami lintera, ale działa (tm)-->
+                            <img style="position:absolute; height: 1.5rem; translate: 330% -430%;" onclick="killimage(<%=imgroup%>, 1+<%=i%>);" src="/images/icons/trash-fill.svg">
+                        <% } %>    
+                    </div>
+                <% } %>
             <% } %>
         </div>
     </div>

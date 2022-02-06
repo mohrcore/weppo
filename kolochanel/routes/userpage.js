@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-const { add_toilet_instance, get_userid_from_username, get_userdata, get_toiletdata, add_toiletimage, change_bio, change_desc } = require('../dbops');
+const { kill_toilet_image, add_toilet_instance, get_userid_from_username, get_userdata, get_toiletdata, add_toiletimage, change_bio, change_desc } = require('../dbops');
 const { get_and_squash_interaction_query, get_interactions } = require('./interaction_view')
 mongoose.connect('mongodb://localhost:27017/kolo');
 const Schemas = require('../schemas');
@@ -66,6 +66,13 @@ router.post('/addimage/username/:username/toiletgroup/:toiletgroup', upload.sing
     // wiem że muszę go dopisać do username -> toiletgroup.
 
     // wróć na stronę profilową.
+    res.redirect("/userpage/username/" + req.params.username)
+})
+
+router.post('/killimage/username/:username', async (req, res, next) => {
+    console.log(req.params, req.body)
+    let user_id = await get_userid_from_username(req.params.username);
+    await kill_toilet_image(user_id, req.body.killimage_boxtarget, req.body.killimage_imtarget)
     res.redirect("/userpage/username/" + req.params.username)
 })
 

@@ -101,6 +101,34 @@ async function add_toiletimage(toiletdata, final_fname) {
   }
 }
 
+async function kill_toilet_image(userid, toilettarget, imtarget) {
+  let userdata = await get_userdata(userid)
+  let targettoiletdata = null;
+
+  if (toilettarget == '1') targettoiletdata = await get_toiletdata(userdata.toiletID_1);
+  if (toilettarget == '2') targettoiletdata = await get_toiletdata(userdata.toiletID_2);
+  if (toilettarget == '3') targettoiletdata = await get_toiletdata(userdata.toiletID_3);
+  
+  // mam id toalety w toilettarget.
+  let toiletdata = await get_toiletdata(targettoiletdata);
+  console.log(toiletdata)
+  let t = "toiletimage_uri_" + imtarget;
+  toiletdata[t] = null;
+  console.log("killing", t)
+  console.log("resulting toiletdata is", toiletdata)
+  
+  for(let i of ["1", "2", "3", "4", "5"]) {
+    let t = "toiletimage_uri_" + i;
+    let tn = "toiletimage_uri_" + (parseInt(i, 10)+1);
+    if (toiletdata[tn] != null && toiletdata[t] == null) {
+      toiletdata[t] = toiletdata[tn];
+      toiletdata[tn] = null
+    }
+  }
+
+  await Toilet.findByIdAndUpdate(targettoiletdata, toiletdata)
+}
+
 async function add_toilet_instance(userid, toilet_name, toilet_desc) {
   let user = await User.findById(userid);
   let toilet = new Toilet({
@@ -126,3 +154,4 @@ exports.add_toiletimage = add_toiletimage;
 exports.change_bio = change_bio;
 exports.change_desc = change_desc;
 exports.add_toilet_instance = add_toilet_instance;
+exports.kill_toilet_image = kill_toilet_image;
