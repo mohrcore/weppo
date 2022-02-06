@@ -5,12 +5,13 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 const passport = require('passport');
+const localauth = require('./localauth');
 const session = require("express-session");
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var interactionRouter = require('./routes/interaction_view');
-const localauth = require('./localauth');
+var userpageRouter = require('./routes/userpage');
 
 /* passport.use(localauth.strategy);
 passport.deserializeUser(localauth.deserializeUser);
@@ -38,6 +39,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/interactions', interactionRouter);
+app.use('/userpage', userpageRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

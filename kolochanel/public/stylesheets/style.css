@@ -47,6 +47,15 @@ a {
   border-radius: 15px;
 }
 
+.content-box-profile {
+  width: 100%;
+  max-width: 85%;
+  padding: 15px;
+  margin: auto;
+  background-color: lightsteelblue;
+  border-radius: 15px;
+}
+
 .content-box {
   width: 100%;
   padding: 15px;
@@ -71,6 +80,17 @@ a {
   background-color: lightgreen;
   border-radius: 15px;
 }
+
+.nested_toilet_subview-box {
+  padding-top: 100%;
+  max-width: 30%;
+  flex-basis: 100%;
+  padding: 15px;
+  margin: 10px;
+  background-color: lightpink;
+  border-radius: 15px;
+}
+
 
 .nested_content_host-box {
   flex-basis: 100%;

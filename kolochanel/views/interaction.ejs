@@ -1,33 +1,178 @@
-<% if(identity == "host") { %>
+<% if(identity == "client") { %>
   <% var comment_id = interaction.host_comment_reference %> 
   <% var response_id = interaction.client_response_reference %> 
+  <% var interaction_stars = interaction.host_rating_stars %> 
+  <% var Tintent = "host_comments" %> 
+  <% var Bintent = "client_responds" %> 
 <% } else { %>
+  <% var interaction_stars = interaction.client_rating_stars %>   
   <% var comment_id = interaction.client_comment_reference %> 
   <% var response_id = interaction.host_response_reference %> 
+  <% var Tintent = "client_comments" %> 
+  <% var Bintent = "host_responds" %> 
 <% } %>
 
-<div class="d-flex flex-column bd-highlight mb-3">
+<% var primary_username = user_map[primary_userid].username %> 
+<% var responder_username = user_map[responder_userid].username %> 
+<% var primary_pfp = user_map[primary_userid].pfp_uri %> 
+<% var responder_pfp = user_map[responder_userid].pfp_uri %> 
+
+<script>
+    function publish(form_side, layer, author, this_interaction, intent) {
+      console.log("uwu", form_side, layer, document.getElementById("interaction_image").value);
+      if(form_side == "primary") {
+          let form = document.getElementById("interaction_comment_form_ashost_" + layer);
+          document.getElementById("author_userid_host_" + layer).value = author;
+          document.getElementById("target_interaction_host_" + layer).value = this_interaction;
+          document.getElementById("target_interaction_host_intent_" + layer).value = intent;
+          form.submit();
+        }
+        if(form_side == "responder") {
+          let form = document.getElementById("interaction_comment_form_asclient_" + layer);
+          document.getElementById("author_userid_client_" + layer).value = author;
+          document.getElementById("target_interaction_client_" + layer).value = this_interaction;
+          document.getElementById("target_interaction_client_intent_" + layer).value = intent;
+          form.submit();
+        }
+      }
+</script>
+
+<div class="d-flex flex-column mb-3">
   <!-- profile picture and metadata -->
-  <div class="p-2 bd-highlight">
-    <div class="d-flex flex-row bd-highlight mb-3">
-      <img class="p-2 bd-highlight img-responsive" src="/images/test_pfp.jpg" style="max-width: 15%;">
-      <p class="p-2 bd-highlight" style="width: 100%">Użytkownik [user login] skomentował:</p>
+  <div class="p-2">
+    <div class="d-flex flex-row mb-1" style="position:relative">
+
+      <img class="rounded-circle p-1 img-responsive" src="<%= primary_pfp %>" style="width: 20%; height: 20%">
+      <div class="position-absolute badge rounded-pill bg-danger" style="width: 20%; translate: 60% -30%;">
+        <%- include('star_rating.ejs', {rating: 3.5}) %>
+      </div>
+
+      <% if(comment_id != "None") { %>
+      <p class="p-1" style="flex-shrink: 100; align-self:flex-end;">
+        <%= primary_username %> skomentował <%= comment_map[comment_id].timestamp %>:
+      </p>
+      <div class="badge rounded-pill bg-secondary" style="position:absolute; width: 32%; top:0rem; right:0rem">
+        <%- include('star_rating.ejs', {rating: interaction_stars}) %>
+      </div>
+      <% } %>
+      <!-- interaction rating from client -->
     </div>
   </div>
-
-  <% if(comment_id != "None") { %>
-    <div class="p-2 bd-highlight">
-      <%= comment_map[comment_id].content %> 
-    </div>
-    
-    <% if(identity == "host") { %>
-      <div class="nested_content_user-box">
-    <% } else { %>
-      <div class="nested_content_host-box">  
-    <% } %>
-    <p>Użytkownik [username] odpowiedział:</p>
-    <%= comment_map[response_id].content %>
-    </div>
-
-  <% } %>
 </div>
+
+  <% if(comment_id == "None") { %>
+    <% if(authorized_actor == primary_userid) { %>
+      <form action="/interactions/username/<%= primary_username %>/publish_comment" id="interaction_comment_form_ashost_<%=layer%>" method="post" enctype="multipart/form-data">
+        <div class="d-flex flex-row mb-1" style="position:relative">
+          <div class="form-group">
+            <label for="exampleInputPassword1">Opis</label>
+            <textarea class="form-control" name="interaction_description" id="interaction_description" rows="6"></textarea>
+          </div>
+          <div class="d-flex flex-column mb-1" >
+            <div class="form-group">
+              <p>Ocena</p>
+              <div class="badge rounded-pill bg-secondary" style="position:relative; width: 80%;">
+                <%- include('star_rating.ejs', {rating: 3.5}) %>
+              </div>
+            </div>
+            <div class="custom-file">
+              <label for="formFile" class="form-label">Załącz zdjęcie</label>
+              <input class="form-control" type="file" name="interaction_image" id="interaction_image">
+            </div>        
+          </div>
+        </div>
+        <input class="form-control" name="author_userid" id="author_userid_host_<%= layer %>" type="text" hidden>
+        <input class="form-control" name="target_interaction" id="target_interaction_host_<%= layer %>" type="text" hidden>
+        <input class="form-control" name="interaction_intent" id="target_interaction_host_intent_<%= layer %>" type="text" hidden>
+      </form>
+      <button class="btn btn-primary" onclick="publish('primary', <%= layer %>, '<%= authorized_actor %>', '<%= interaction._id%>', '<%=Tintent%>');">Opublikuj</button>
+
+      <% } %>
+  <% } else { %>
+  <!-- comment body -->
+    <div class="p-2 bd-highlight">
+      <% if(comment_map[comment_id].resource_uri == 'None' && comment_map[comment_id].content == 'None') { %>
+        <p>wtf?</p>
+      <%= comment_map[comment_id].content %> 
+      <% } else if(comment_map[comment_id].resource_uri != 'None' && comment_map[comment_id].content == 'None') { %>
+        <img class="p-2 bd-highlight img-responsive" src="<%= comment_map[comment_id].resource_uri %>" style="max-width: 30%;">
+      <% } else if(comment_map[comment_id].resource_uri == 'None' && comment_map[comment_id].content != 'None') { %>
+        <p><%= comment_map[comment_id].content %></p>
+      <% } else if(comment_map[comment_id].resource_uri != 'None' && comment_map[comment_id].content != 'None') { %>
+        <div class="d-flex flex-row bd-highlight mb-3">
+          <p class="p-2 bd-highlight"><%= comment_map[comment_id].content %> </p>    
+          <img class="p-2 bd-highlight img-responsive" src="<%= comment_map[comment_id].resource_uri %>" style="max-width: 30%;">
+        </div>
+      <% } else { %>
+        <p>wtf></p>
+      <% } %>
+    </div>
+
+    <% if(response_id != "None" || (response_id == "None" && authorized_actor == responder_userid)) { %>
+      <!-- response body -->
+      <% if(identity == "host") { %>
+        <div class="nested_content_user-box">
+      <% } else { %>
+        <div class="nested_content_host-box">  
+      <% } %>
+      <div class="d-flex flex-row mb-1" style="position:relative">
+        <img class="rounded-circle p-1 img-responsive" src="<%= responder_pfp %>" style="width: 20%; height: 20%">
+        <div class="position-absolute badge rounded-pill bg-danger" style="width: 20%; translate: 60% -30%;">
+          <%- include('star_rating.ejs', {rating: 1.5}) %>
+        </div>
+      </div>
+      <div class="p-2 bd-highlight">
+        <% if(response_id == "None" && authorized_actor == responder_userid) { %>
+          <div>
+          <form action="/interactions/username/<%= primary_username %>/publish_comment" id="interaction_comment_form_asclient_<%=layer%>" method="post" enctype="multipart/form-data">
+            <div class="d-flex flex-row mb-1" style="position:relative">
+              <div class="form-group">
+                <label for="exampleInputPassword1">Opis</label>
+                <textarea class="form-control" name="interaction_description" id="interaction_description" rows="6"></textarea>
+              </div>
+              <div class="d-flex flex-column mb-1" >
+                <div class="form-group">
+                  <p>Ocena</p>
+                  <div class="badge rounded-pill bg-secondary" style="position:relative; width: 80%;">
+                    <%- include('star_rating.ejs', {rating: 3.5}) %>
+                  </div>
+                </div>
+                <div class="custom-file">
+                  <label for="formFile" class="form-label">Załącz zdjęcie</label>
+                  <input class="form-control" type="file" name="interaction_image" id="interaction_image">
+                </div>        
+              </div>
+            </div>
+            <input class="form-control" name="author_userid" id="author_userid_client_<%= layer %>" type="text" hidden>
+            <input class="form-control" name="target_interaction" id="target_interaction_client_<%= layer %>" type="text" hidden>
+            <input class="form-control" name="interaction_intent" id="target_interaction_client_intent_<%= layer %>" type="text" hidden>
+          </form>
+          <button class="btn btn-primary" onclick="publish('responder', <%= layer %>, '<%= authorized_actor %>', '<%= interaction._id%>', '<%=Bintent%>');">Opublikuj</button>
+        </div>
+          <% } else { %>
+
+        <p class="p-1" style="flex-shrink: 100; align-self:flex-end;">
+          <%= responder_username %> skomentował o  <%= comment_map[response_id].timestamp %> :
+        </p>
+        </div>
+        <div class="p-2 bd-highlight">
+          <% if(comment_map[response_id].resource_uri == 'None' && comment_map[response_id].content == 'None') { %>
+            <p>wtf?</p>
+          <%= comment_map[response_id].content %> 
+          <% } else if(comment_map[response_id].resource_uri != 'None' && comment_map[response_id].content == 'None') { %>
+            <img class="p-2 bd-highlight img-responsive" src="<%= comment_map[response_id].resource_uri %>" style="max-width: 30%;">
+          <% } else if(comment_map[response_id].resource_uri == 'None' && comment_map[response_id].content != 'None') { %>
+            <p><%= comment_map[response_id].content %></p>
+          <% } else if(comment_map[response_id].resource_uri != 'None' && comment_map[response_id].content != 'None') { %>
+            <div class="d-flex flex-row bd-highlight mb-3">
+              <img class="p-2 bd-highlight img-responsive" src="<%= comment_map[response_id].resource_uri %>" style="max-width: 30%;">
+              <p class="p-2 bd-highlight"><%= comment_map[response_id].content %> </p>    
+            </div>
+          <% } else { %>
+            <p>wtf></p>
+          <% } %>
+        <% } %>
+      </div>
+      </div>
+    <% } %>
+  <% } %>
