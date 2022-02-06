@@ -133,10 +133,19 @@ router.get('/username/:username', async(req, res, next) => {
     let query_hint = {$or: [{client_userid: user_id}, {host_userid: user_id}]};
     let inter_query = await get_and_squash_interaction_query(query_hint)
     inter_query = await get_interactions(inter_query, res)
-    console.log(t1_ref, t2_ref, t3_ref)
+
     if(t1_ref == "None") {t1_ref = "Invite"; t2_ref = "None"; t3_ref = "None";} else
     if(t2_ref == "None") {t2_ref = "Invite"; t3_ref = "None";} else
     if(t3_ref == "None") {t3_ref = "Invite";}
+
+    let authed_user = false;
+    let authorized_actor = "nikt"
+    if (req.user && req.user.username == req.params.username) {
+        authed_user = true;
+        authorized_actor = user_id;
+    }
+
+    console.log("tutaj patrzymy czy to ja", req.user);
 
     pagedata = {
         username: req.params.username,
@@ -147,12 +156,10 @@ router.get('/username/:username', async(req, res, next) => {
         t2_ref: massage_shitterimages(t2_ref),
         t3_ref: massage_shitterimages(t3_ref),
         interaction_query: inter_query,
-        interactive_page: true,
-        authorized_actor: user_id,
+        interactive_page: authed_user,
+        authorized_actor: authorized_actor,
     }
 
-    console.log(pagedata)
-  
     res.render('user_page', pagedata);
 });
 

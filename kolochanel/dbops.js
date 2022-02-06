@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 mongoose.connect('mongodb://localhost:27017/kolo');
-const {User, Toilet, Comment, Interaction} = require('./schemas');
+const { User, Toilet, Comment, Interaction } = require('./schemas');
 
 
 function hashPwd(pwd) {
@@ -24,7 +24,7 @@ async function create_user(username, email, passwd) {
 
   if (ex_users_by_email != null)
     return 'exists_email';
-  
+
   let pwdhash = await hashPwd(passwd);
 
   let new_user = new User({
@@ -33,7 +33,7 @@ async function create_user(username, email, passwd) {
     email: email,
     pwdhash: pwdhash
   });
-  
+
   console.log('SAVING USER!');
   await new_user.save();
   return new_user._id;
@@ -41,14 +41,14 @@ async function create_user(username, email, passwd) {
 
 async function login_user(username, passwd) {
   let existing_user = await User.findOne({ username: username });
-  
+
   console.log(existing_user)
   if (existing_user == null)
     return 'no_account';
-  
+
   try {
     if (!(await bcrypt.compare(passwd, existing_user.pwdhash)))
-        return 'wrong_pwd';
+      return 'wrong_pwd';
   } catch (e) {
     console.log('Error comparing passwords:', e);
     return 'internal_error';
@@ -59,6 +59,7 @@ async function login_user(username, passwd) {
 
 async function getUserById(id) {
   return await User.findById(id);
+}
 
 async function get_userid_from_username(username) {
   let user = await User.findOne({ username: username });
@@ -66,7 +67,7 @@ async function get_userid_from_username(username) {
 }
 
 async function get_userdata(userid) {
-  let user = await User.findOne({_id: userid})
+  let user = await User.findOne({ _id: userid })
   return user
 }
 
@@ -92,7 +93,7 @@ async function get_toiletdata(toiletid) {
 async function add_toiletimage(toiletdata, final_fname) {
   let toilet = await Toilet.findById(toiletdata)
 
-  for(let i of ["1", "2", "3", "4", "5", "6"]) {
+  for (let i of ["1", "2", "3", "4", "5", "6"]) {
     let t = "toiletimage_uri_" + i;
     console.log(toilet[t])
     if (!toilet[t]) {
@@ -105,9 +106,9 @@ async function add_toiletimage(toiletdata, final_fname) {
 
 async function kill_toilet(userid, toilet_enum) {
   let userdata = await get_userdata(userid)
-  if (toilet_enum == '1') {userdata.toiletID_1 = userdata.toiletID_2; userdata.toiletID_2 = userdata.toiletID_3; userdata.toiletID_3 = null;} 
-  if (toilet_enum == '2') {userdata.toiletID_2 = userdata.toiletID_3; userdata.toiletID_3 = null;}
-  if (toilet_enum == '3') {userdata.toiletID_3 = null;}
+  if (toilet_enum == '1') { userdata.toiletID_1 = userdata.toiletID_2; userdata.toiletID_2 = userdata.toiletID_3; userdata.toiletID_3 = null; }
+  if (toilet_enum == '2') { userdata.toiletID_2 = userdata.toiletID_3; userdata.toiletID_3 = null; }
+  if (toilet_enum == '3') { userdata.toiletID_3 = null; }
 
   await User.findByIdAndUpdate(userid, userdata);
 }
@@ -118,14 +119,14 @@ async function update_toilet(userid, toilet_enum, toilet_name, toilet_desc, toil
   if (toilet_enum == '1') toiletdata = await get_toiletdata(userdata.toiletID_1);
   if (toilet_enum == '2') toiletdata = await get_toiletdata(userdata.toiletID_2);
   if (toilet_enum == '3') toiletdata = await get_toiletdata(userdata.toiletID_3);
-  
+
   toiletdata.toiletname = toilet_name;
   toiletdata.toiletdesc = toilet_desc;
   toiletdata.toiletname = toilet_name;
   toiletdata.gps_lat = new mongoose.Types.Decimal128((+toilet_gps_lat.toString()).toFixed(4)),
-  toiletdata.gps_lon = new mongoose.Types.Decimal128((+toilet_gps_lon.toString()).toFixed(4)),
-  
-  await toiletdata.save()
+    toiletdata.gps_lon = new mongoose.Types.Decimal128((+toilet_gps_lon.toString()).toFixed(4)),
+
+    await toiletdata.save()
 }
 
 
@@ -136,7 +137,7 @@ async function kill_toilet_image(userid, toilettarget, imtarget) {
   if (toilettarget == '1') targettoiletdata = await get_toiletdata(userdata.toiletID_1);
   if (toilettarget == '2') targettoiletdata = await get_toiletdata(userdata.toiletID_2);
   if (toilettarget == '3') targettoiletdata = await get_toiletdata(userdata.toiletID_3);
-  
+
   // mam id toalety w toilettarget.
   let toiletdata = await get_toiletdata(targettoiletdata);
   console.log(toiletdata)
@@ -144,10 +145,10 @@ async function kill_toilet_image(userid, toilettarget, imtarget) {
   toiletdata[t] = null;
   console.log("killing", t)
   console.log("resulting toiletdata is", toiletdata)
-  
-  for(let i of ["1", "2", "3", "4", "5"]) {
+
+  for (let i of ["1", "2", "3", "4", "5"]) {
     let t = "toiletimage_uri_" + i;
-    let tn = "toiletimage_uri_" + (parseInt(i, 10)+1);
+    let tn = "toiletimage_uri_" + (parseInt(i, 10) + 1);
     if (toiletdata[tn] != null && toiletdata[t] == null) {
       toiletdata[t] = toiletdata[tn];
       toiletdata[tn] = null
@@ -170,9 +171,9 @@ async function add_toilet_instance(userid, toilet_name, toilet_desc, toilet_lat,
 
   await toilet.save();
 
-  if(!user.toiletID_1) {user.toiletID_1 = toilet._id; await User.findByIdAndUpdate(userid, user); return;}
-  if(!user.toiletID_2) {user.toiletID_2 = toilet._id; await User.findByIdAndUpdate(userid, user); return;}
-  if(!user.toiletID_3) {user.toiletID_3 = toilet._id; await User.findByIdAndUpdate(userid, user); return;}
+  if (!user.toiletID_1) { user.toiletID_1 = toilet._id; await User.findByIdAndUpdate(userid, user); return; }
+  if (!user.toiletID_2) { user.toiletID_2 = toilet._id; await User.findByIdAndUpdate(userid, user); return; }
+  if (!user.toiletID_3) { user.toiletID_3 = toilet._id; await User.findByIdAndUpdate(userid, user); return; }
   console.log("CRITICAL, TOILET QUOTA EXCEEDED FOR", user._id);
 }
 
