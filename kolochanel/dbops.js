@@ -63,7 +63,24 @@ async function getUserById(id) {
 
 async function get_userid_from_username(username) {
   let user = await User.findOne({ username: username });
-  return user._id;
+  if (user != null)
+    return user._id;
+
+  if (username[0].toUpperCase() == username[0]) {//pierwszy znak to upper case
+    let newname = username[0].toLowerCase() + username.substring(1);
+    user = await User.findOne({ username: newname });
+    if (user != null)
+      return user._id;
+  }
+
+  if (username[0].toLowerCase() == username[0]) {//pierwszy znak to lower case
+    let newname = username[0].toUpperCase() + username.substring(1);
+    user = await User.findOne({ username: newname });
+    if (user != null)
+      return user._id;
+  }
+
+  return "no_such_user"
 }
 
 async function get_userdata(userid) {

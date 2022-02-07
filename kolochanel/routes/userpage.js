@@ -135,6 +135,9 @@ router.post('/modtoilet/username/:username', async (req, res, next) => {
     res.redirect("/userpage/username/" + req.params.username)
 })
 
+router.get('/404/username/:username', async(req, res, next) => {
+    renderWithDefaults(req, res, 'user_page_404', {username: req.params.username});
+});
 
 /* GET home page. */
 router.get('/username/:username', async(req, res, next) => {
@@ -142,7 +145,17 @@ router.get('/username/:username', async(req, res, next) => {
         return // some weirdness goind on.
 
     let user_id = await get_userid_from_username(req.params.username);
+
+    if (user_id == "no_such_user") {
+        res.redirect('/userpage/404/username/' + req.params.username)
+    }
+
     let userdata = await get_userdata(user_id)
+
+    if (userdata.username != req.params.username) {
+        res.redirect('/userpage/username/' + userdata.username)
+    }
+
     let t1_ref = await userdata.toiletID_1 ? await get_toiletdata(userdata.toiletID_1) : "None";
     let t2_ref = await userdata.toiletID_2 ? await get_toiletdata(userdata.toiletID_2) : "None";
     let t3_ref = await userdata.toiletID_3 ? await get_toiletdata(userdata.toiletID_3) : "None";
