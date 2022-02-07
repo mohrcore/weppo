@@ -109,6 +109,10 @@
       in_request = false;
     }
 
+    function logout() {
+      window.location.href = "/logout";
+    }
+
     async function observer() {
       let b = document.getElementById("logged_button")
       if (b) {
@@ -132,77 +136,85 @@
 </head>
 
 <body>
-  <div class="content-box-profile">
-    <% if(interactive_page) { %>
-      <button type="button" id="logged_button" class="w-100 btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
-        <h1>szukaj użytkowników w pobliżu!</h1>
-      </button>
-      <% } else if(logged_user !="None" ) {%>
-        <button type="button" class="w-100 btn btn-primary"
-          onclick="window.location.href='/userpage/username/<%=logged_user%>'">
-          <h1>Powróć na swój profil</h1>
-        </button>
+  <div style="min-width: 100%">
+    <div class="content-box-profile mb-3">
+    <div class="header-flexbox">
+      <div class="logo-container-left">
+        <%- include('kolochanel_logo.ejs', { user: user }) %>
+      </div>
+      <div>
+        <% if(interactive_page) { %>
+          <button type="button" id="logged_button" class="w-100 btn kc-btn kc-btn-round kc-icon-btn" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+            <img src="/images/icons/kolo_klop.svg">
+          </button>
+        <% } else if(logged_user !="None" ) {%>
+          <button type="button" class="w-100 btn kc-btn kc-btn-round kc-icon-btn"
+            onclick="window.location.href='/userpage/username/<%=logged_user%>'">
+            <h1>Powróć na swój profil</h1>
+          </button>
         <% } %>
-
-          <div class="content-floating">
-            <h1 style="text-align:center">KOLO CHANEL</h1>
-          </div>
-          <div class="content-floating">
-            <h6 style="text-align:center">Podgląd profilu</h6>
-          </div>
-          <div class="p-2 d-flex flex-column bd-highlight mb-3">
-            <div class="p-2 nested_content-box">
-              <div class="d-flex flex-row bd-highlight mb-3">
-                <img class="p-1 img-responsive" src="<%= pfp_uri %>" style="width: 45%; height: 45%">
-                <div class="p-2 nested_content_host-box">
-                  <div class="p-2 d-flex flex-row bd-highlight mb-3" style="align-items: stretch;">
-                    <% if(interactive_page) { %>
-                      <img src="/images/icons/pencil-square.svg" class="p-1 img-responsive"
-                        style="width: 7%; height: 7%" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                      <% } %>
-                        <h1 class="p-2">
-                          <%= username %>
-                        </h1>
-                  </div>
-                  <div class="p-2 d-flex flex-row bd-highlight mb-3" style="align-items: stretch;">
-                    <% if(interactive_page) { %>
-                      <img src="/images/icons/pencil-square.svg" class="p-1 img-responsive"
-                        style="width: 5%; height: 5%" data-bs-toggle="modal" data-bs-target="#exampleModal2">
-                      <% } %>
-                        <h3 class="p-2">
-                          <%= user_quote %>
-                        </h3>
-                  </div>
-                  <div class="p-2 d-flex flex-row bd-highlight mb-3" style="align-items: stretch;">
-                    <% if(interactive_page) { %>
-                      <img src="/images/icons/pencil-square.svg" class="p-1 img-responsive"
-                        style="width: 4%; height: 4%" data-bs-toggle="modal" data-bs-target="#exampleModal3">
-                      <% } %>
-                        <h5 class="p-2">
-                          <%= user_long_description %>
-                        </h5>
-                  </div>
-                </div>
-              </div>
+      </div>
+      <% if(interactive_page) { %>
+        <div>
+          <button type="button" id="logout_button" class="w-100 btn kc-btn kc-btn-round kc-icon-btn" onclick="logout();">
+            <img src="/images/icons/kolo_logout.svg">
+          </button>
+        </div>
+      <% } %>
+    </div>
+  </div>
+  <div class="content-box-profile mb-3">
+    <div class="p-2 d-flex flex-column bd-highlight">
+      <div class="p-2 nested_content-box">
+        <div class="d-flex flex-row bd-highlight">
+          <img class="p-1 img-responsive pfp-img-main" src="<%= pfp_uri %>" style="width: 45%; height: 45%; border-radius: 0.6em">
+          <div class="p-2 nested_content_host-box">
+            <div class="p-2 d-flex flex-row bd-highlight" style="align-items: stretch;">
+              <% if(interactive_page) { %>
+                <img src="/images/icons/pencil-square.svg" class="p-1 img-responsive edit-icon" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <% } %>
+                  <h1>
+                    <%= username %>
+                  </h1>
             </div>
-            <h2 class="p-2">PRZEGLĄD ARMATURY</h2>
-            <div class="p-2 d-flex flex-row bd-highlight mb-3">
-              <%- include('toilet_subview.ejs', {tref: t1_ref, interactive_page: interactive_page, username: username,
-                imgroup:"1"}) %>
-                <%- include('toilet_subview.ejs', {tref: t2_ref, interactive_page: interactive_page, username: username,
-                  imgroup:"2"}) %>
-                  <%- include('toilet_subview.ejs', {tref: t3_ref, interactive_page: interactive_page, username:
-                    username, imgroup:"3"}) %>
+            <div class="p-2 d-flex flex-row bd-highlight" style="align-items: stretch;">
+              <% if(interactive_page) { %>
+                <img src="/images/icons/pencil-square.svg" class="p-1 img-responsive edit-icon" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                <% } %>
+                  <h3 class="p-2">
+                    <%= user_quote %>
+                  </h3>
             </div>
-            <h2 class="p-2">PRZEGLĄD KOMENTARZY</h2>
-            <%- include('interaction_top.ejs', {interaction_descriptor: interaction_query, authorized_actor:
-              authorized_actor}) %>
+            <div class="p-2 d-flex flex-row bd-highlight" style="align-items: stretch;">
+              <% if(interactive_page) { %>
+                <img src="/images/icons/pencil-square.svg" class="p-1 img-responsive edit-icon" data-bs-toggle="modal" data-bs-target="#exampleModal3">
+                <% } %>
+                  <h5 class="p-2">
+                    <%= user_long_description %>
+                  </h5>
+            </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="content-box-profile mb-3">
+    <div>
+      <h2 class="p-2">PRZEGLĄD ARMATURY</h2>
+      <div class="p-2 d-flex flex-row bd-highlight mb-3">
+        <%- include('toilet_subview.ejs', {tref: t1_ref, interactive_page: interactive_page, username: username, imgroup:"1"}) %>
+        <%- include('toilet_subview.ejs', {tref: t2_ref, interactive_page: interactive_page, username: username, imgroup:"2"}) %>
+        <%- include('toilet_subview.ejs', {tref: t3_ref, interactive_page: interactive_page, username: username, imgroup:"3"}) %>
+      </div>
+      <h2 class="p-2">PRZEGLĄD KOMENTARZY</h2>
+      <%- include('interaction_top.ejs', {interaction_descriptor: interaction_query, authorized_actor:
+        authorized_actor}) %>
+    </div>
   </div>
   </div>
   </div>
 
-  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+  <div class="modal fade kc-modal" id="exampleModalCenter" tabindex="-1" role="dialog"
     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -275,7 +287,7 @@
   </div>
 
   <!--nie wiem jak to zrobić dobrze, modal od zmiany loginu-->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade kc-modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -292,9 +304,11 @@
       </div>
     </div>
   </div>
+  </div>
+  
 
   <!--nie wiem jak to zrobić dobrze, modal od zmiany bio-->
-  <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModal2Label" aria-hidden="true">
+  <div class="modal fade kc-modal" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModal2Label" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -320,7 +334,7 @@
   </div>
 
   <!--nie wiem jak to zrobić dobrze, modal od zmiany długiego bio-->
-  <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModal3Label" aria-hidden="true">
+  <div class="modal fade kc-modal" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModal3Label" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -348,7 +362,7 @@
 
   <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
     <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-body">
+      <div class="toast-body kc-modal">
         <h2 id="toast_username"></h2>
         <img id="toast_pfp" class="p-1 img-responsive rounded-circle" src="/images/empty_box.jpg" style="width:50%">
         <div class="d-grid gap-2">

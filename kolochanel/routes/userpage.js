@@ -9,6 +9,7 @@ const upload = multer({ dest: 'public/images/' })
 const path = require('path');
 const sharp = require('sharp');
 const fs = require('fs');
+const renderWithDefaults = require('../common').renderWithDefaults;
 
 function massage_shitterimages(toilet_ref) {
     if (toilet_ref == "None" || toilet_ref == "Invite") {
@@ -164,7 +165,7 @@ router.get('/username/:username', async(req, res, next) => {
     }
 
     console.log(pagedata)
-    res.render('user_page', pagedata);
+    renderWithDefaults(req, res, 'user_page', pagedata);
 });
 
 module.exports = router;

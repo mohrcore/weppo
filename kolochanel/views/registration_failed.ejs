@@ -17,7 +17,9 @@
   </head>
   <body>
     <div class="content-box-constrained">
-      <%- include('kolochanel_logo.ejs', { user: user }) %>
+      <div class="content-floating main_logo_welcome">
+        <%- include('kolochanel_logo.ejs', { user: user }) %>
+      </div>
       <div class="content-box-constrained-shorthand">
         <%- include('attention.ejs', {message: error_message}) %>
         <div class="content-box-constrained-short">
