@@ -68,7 +68,7 @@
     <div class="d-flex flex-row mb-1" style="position:relative">
       <img class="rounded-circle p-1 img-responsive" src="<%= primary_pfp %>" onclick="window.location.href='/userpage/username/<%=primary_username%>'" style="width: 20%; height: 20%">
       <div class="position-absolute badge rounded-pill bg-danger" style="width: 20%; translate: 60% -30%;">
-        <%- include('star_rating.ejs', {rating: 3.5, starhandle: "None"}) %>
+        <%- include('star_rating.ejs', {rating: user_map[primary_userid].user_rating / 2, starhandle: "None"}) %>
       </div>
 
       <% if(comment_id != "None") { %>
@@ -144,7 +144,7 @@
       <div class="d-flex flex-row mb-1" style="position:relative">
         <img class="rounded-circle p-1 img-responsive" onclick="window.location.href='/userpage/username/<%=primary_username%>'" src="<%= responder_pfp %>" style="width: 20%; height: 20%">
         <div class="position-absolute badge rounded-pill bg-danger" style="width: 20%; translate: 60% -30%;">
-          <%- include('star_rating.ejs', {rating: 1.5, starhandle: "None"}) %>
+          <%- include('star_rating.ejs', {rating: user_map[responder_userid].user_rating / 2, starhandle: "None"}) %>
         </div>
       </div>
       <div class="p-2 bd-highlight">

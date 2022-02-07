@@ -22,6 +22,7 @@ const CommentSchema = new mongoose.Schema({
 const UserSchema = new mongoose.Schema({
     timestamp: {type: mongoose.Date, required: true},
     username: {type: String, required: true},
+    user_rating: {type: Number, required: false},
     email: {type: String, required: true},
     pwdhash: {type: String, required: true},
     pfp_uri: {type: String, required: false},

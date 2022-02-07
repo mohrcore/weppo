@@ -1,7 +1,6 @@
 <% if(starhandle) { %>
   <div class="d-flex justify-content-evenly flex-row mb-1">
   <input class="form-control" name="star_vvalue" id="star_vvalue_<%= starhandle %>" value="0.0" type="text" hidden>
-
   <% for(var i=0; i < 10; i+=2) { %>
     <% var handle = "star_" + i + "_" + starhandle %>
     <% if(rating*2 > (i+1)) { %>

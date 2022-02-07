@@ -99,6 +99,7 @@ async function get_and_squash_user_query(user_mapping) {
     user_map[u._id] = {
       username: u.username ? u.username : "None",
       pfp_uri: u.pfp_uri ? u.pfp_uri : "None",
+      user_rating: u.user_rating ? u.user_rating : 5,
     }
   }
 
