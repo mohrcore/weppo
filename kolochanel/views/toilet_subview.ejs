@@ -27,17 +27,24 @@
         console.log("kill", imgroup)
         let modal = new bootstrap.Modal(document.getElementById("exampleModal_tedit" + imgroup));
         modal.show()
-        
-        //document.getElementById("modtoilet").submit();
     }
 
     function finalize_edit(imgroup) {
         document.getElementById("modtoilet_" + imgroup + "_target").value = imgroup;
         document.getElementById("modtoilet_" + imgroup + "_kill").value = "False";
-        document.getElementById("modtoilet_" + imgroup + "_name").value = document.getElementById("modal_toilet_name" + imgroup).value;
+        let toilet_name = document.getElementById("modal_toilet_name" + imgroup).value;
+        let toilet_lat = document.getElementById("modal_toilet_gps_lat" + imgroup).value;
+        let toilet_lon = document.getElementById("modal_toilet_gps_lon" + imgroup).value;
+        document.getElementById("modtoilet_" + imgroup + "_name").value = toilet_name;
         document.getElementById("modtoilet_" + imgroup + "_desc").value = document.getElementById("modal_toilet_descr" + imgroup).value;
-        document.getElementById("modtoilet_" + imgroup + "_gps_lat").value = document.getElementById("modal_toilet_gps_lat" + imgroup).value;
-        document.getElementById("modtoilet_" + imgroup + "_gps_lon").value = document.getElementById("modal_toilet_gps_lon" + imgroup).value;
+        document.getElementById("modtoilet_" + imgroup + "_gps_lat").value = toilet_lat;
+        document.getElementById("modtoilet_" + imgroup + "_gps_lon").value = toilet_lon;
+
+        console.log(toilet_name, toilet_lat, toilet_lon, imgroup)
+        if(toilet_name == "") {alert("nazwa toalety nie może być pusta!");return;}
+        if(toilet_lat == "" && toilet_lon == "") {document.getElementById("modtoilet_" + imgroup).submit();return}
+        if(isNaN(parseFloat(toilet_lat))) {alert('"' + toilet_lat + '"' + " nie jest poprawną szerokością geograficzną");return;}
+        if(isNaN(parseFloat(toilet_lon))) {alert('"' + toilet_lon + '"' + " nie jest poprawną długością geograficzną");return;}
         document.getElementById("modtoilet_" + imgroup).submit();
     }
 
@@ -51,6 +58,18 @@
 
         document.getElementById("modtoilet_" + imgroup).submit();
     }
+
+    function validate_newtoilet() {
+        let toilet_name = document.getElementById("newtoilet_toiletname").value;
+        if(toilet_name == "") {alert("nazwa toalety nie może być pusta!");return;}
+        let lat = document.getElementById("toilet_GPS_lat").value;
+        let lon = document.getElementById("toilet_GPS_lon").value;
+        if(lat == "" && lon == "") {document.getElementById("addshitter").submit();return}
+        if(isNaN(parseFloat(lat))) {alert('"' + lat + '"' + " nie jest poprawną szerokością geograficzną");return;}
+        if(isNaN(parseFloat(lon))) {alert('"' + lon + '"' + " nie jest poprawną długością geograficzną");return;}
+        document.getElementById("addshitter").submit();
+    }
+
 </script>
 
 <% if(tref == "None") { %>
@@ -60,12 +79,12 @@
     <div class="p-2 nested_toilet_subview-box" style = "max-width: 33%;">
         <h5 style="color:black;"> Dodaj nową toaletę</h5>
         <form action="/userpage/addshitter/username/<%= username %>" id="addshitter" method="post">
-            <input class="form-control mb-3" name="toilet_name" type="text" placeholder="Nazwa" aria-label="default input example">
+            <input class="form-control mb-3" id="newtoilet_toiletname" name="toilet_name" type="text" placeholder="Nazwa" aria-label="default input example">
             <input class="form-control mb-3" name="toilet_desc" type="text" placeholder="Opis" aria-label="default input example">
-            <input class="form-control mb-3" name="toilet_GPS_lat" type="text" placeholder="KoordynatyGPS (długość)" aria-label="default input example">
-            <input class="form-control mb-3" name="toilet_GPS_lon" type="text" placeholder="KoordynatyGPS (szerokość)" aria-label="default input example">
-            <button type="submit" class="w-100 btn kc-btn">Dodaj Toaletę</button>
+            <input class="form-control mb-3" id="toilet_GPS_lat" name="toilet_GPS_lat" type="text" placeholder="KoordynatyGPS (długość)" aria-label="default input example">
+            <input class="form-control mb-3" id="toilet_GPS_lon" name="toilet_GPS_lon" type="text" placeholder="KoordynatyGPS (szerokość)" aria-label="default input example">
         </form>
+        <button class="w-100 btn kc-btn" onclick="validate_newtoilet()">Dodaj Toaletę</button>
     </div>
     <% }  %>
 <% } else { %>
@@ -131,22 +150,14 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModal_tedit<%=imgroup%>Label">Edycja toalety</h5>
+          <h5 class="modal-title" style="color:black" id="exampleModal_tedit<%=imgroup%>Label">Edycja toalety</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <textarea class="form-control" placeholder="Nazwa toalety" form="bio_input" id="modal_toilet_name<%=imgroup%>" name="modal_toilet_name" rows="1"></textarea>
-            <label for="toilet_name"><%=tref.toiletname%></label>
-            <textarea class="form-control" placeholder="Opis toalety" form="bio_input" id="modal_toilet_descr<%=imgroup%>" name="modal_toilet_descr" rows="1"></textarea>
-                <% if(tref.toiletdesc) { %>
-                    <label for="bio_input"><%=tref.toiletdesc%></label>
-                <% } else { %>
-                    <label for="bio_input"></label>
-                <% } %>
-            <textarea class="form-control" placeholder="Koordynaty" form="bio_input" id="modal_toilet_gps_lat<%=imgroup%>" name="modal_toilet_gps_lat" rows="1"></textarea>
-            <textarea class="form-control" placeholder="Koordynaty" form="bio_input" id="modal_toilet_gps_lon<%=imgroup%>" name="modal_toilet_gps_lon" rows="1"></textarea>
-
-            <label for="bio_input">Lorem ipsum dolor sit amet, consectetur adipiscing elit</label>
+            <input class="form-control mb-3" id="modal_toilet_name<%=imgroup%>" name="modal_toilet_name" type="text" placeholder="Nazwa" aria-label="default input example">
+            <input class="form-control mb-3" id="modal_toilet_descr<%=imgroup%>" name="modal_toilet_descr" type="text" placeholder="Opis toalety" aria-label="default input example">
+            <input class="form-control mb-3" id="modal_toilet_gps_lat<%=imgroup%>" name="modal_toilet_gps_lat" type="text" placeholder="KoordynatyGPS (długość)" aria-label="default input example">
+            <input class="form-control mb-3" id="modal_toilet_gps_lon<%=imgroup%>" name="modal_toilet_gps_lon" type="text" placeholder="KoordynatyGPS (szerokość)" aria-label="default input example">
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-danger" onclick="mod_toilet(<%=imgroup%>);">Usuń toaletę</button>
