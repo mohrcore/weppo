@@ -15,9 +15,11 @@
   </head>
   <body>
     <div class="content-box-constrained">
-      <%- include('kolochanel_logo.ejs', { user: user }) %>
+      <div class="content-floating">
+        <%- include('kolochanel_logo.ejs', { user: user }) %>
+      </div>
       <div class="content-box-constrained-short">
-        <div class="content-floating">
+        <div class="content-floating main_logo_welcome">
           <p style="text-align:center">Rejestracja użytkownika</p>
         </div>
         <form action="register_user", method = "POST">

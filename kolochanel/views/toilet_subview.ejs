@@ -60,16 +60,16 @@
     <div class="p-2 nested_toilet_subview-box" style = "max-width: 33%;">
         <p> Dodaj nową toaletę</p>
         <form action="/userpage/addshitter/username/<%= username %>" id="addshitter" method="post">
-            <input class="form-control" name="toilet_name" type="text" placeholder="Nazwa" aria-label="default input example">
-            <input class="form-control" name="toilet_desc" type="text" placeholder="Opis" aria-label="default input example">
-            <input class="form-control" name="toilet_GPS_lat" type="text" placeholder="KoordynatyGPS (długość)" aria-label="default input example">
-            <input class="form-control" name="toilet_GPS_lon" type="text" placeholder="KoordynatyGPS (szerokość)" aria-label="default input example">
-            <button type="submit" class="w-100 btn btn-primary">Dodaj Toaletę</button>
+            <input class="form-control mb-3" name="toilet_name" type="text" placeholder="Nazwa" aria-label="default input example">
+            <input class="form-control mb-3" name="toilet_desc" type="text" placeholder="Opis" aria-label="default input example">
+            <input class="form-control mb-3" name="toilet_GPS_lat" type="text" placeholder="KoordynatyGPS (długość)" aria-label="default input example">
+            <input class="form-control mb-3" name="toilet_GPS_lon" type="text" placeholder="KoordynatyGPS (szerokość)" aria-label="default input example">
+            <button type="submit" class="w-100 btn kc-btn">Dodaj Toaletę</button>
         </form>
     </div>
     <% }  %>
 <% } else { %>
-    <div class="p-2 nested_toilet_subview-box" style = "width: 33%;">
+    <div class="p-2 nested_toilet_subview-box nested_toilet_subview-box-hl" style = "width: 33%;">
         <% if (interactive_page == true) { %>   <!-- to rzuca błędami lintera, ale działa (tm)-->
             <form style="position:absolute" action="/userpage/modtoilet/username/<%= username %>" id="modtoilet_<%=imgroup%>" method="post" hidden>
                 <input class="form-control" name="modtoilet_kill" id="modtoilet_<%=imgroup%>_kill" form="modtoilet_<%=imgroup%>" type="text" >
@@ -122,7 +122,6 @@
     </div>
 <% } %>
 
-<!-- fuck me I hate myself-->
 <div class="modal fade" id="exampleModal_tedit<%=imgroup%>" tabindex="-1" aria-labelledby="exampleModal_tedit<%=imgroup%>Label" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">

@@ -41,7 +41,7 @@ async function login(req, res, next) {
     if (!user) {
       params.error_message = 
         'Podany użytkownik nie istnieje, bądź hasło jest nieprawidłowe.';
-      res.render('registration_failed', params);
+      renderWithDefaults(req, res, 'registration_failed', params);
     }
     req.logIn(user, (err) => {
       if (err) {
@@ -74,5 +74,13 @@ router.post('/register_user', async (req, res, next) => {
   }
 });
 
+
+router.get('/logout', async (req, res, next) => {
+  if (req.user != undefined) {
+    req.logOut();
+  }
+
+  res.redirect('/');
+});
 
 module.exports = router;

@@ -7,6 +7,7 @@ const upload = multer({ dest: 'public/images/' })
 const path = require('path');
 const sharp = require('sharp');
 const fs = require('fs');
+const renderWithDefaults = require('../common').renderWithDefaults;
 
 mongoose.connect('mongodb://localhost:27017/kolo');
 const {Interaction, Comment, User} = require('../schemas');
@@ -119,7 +120,7 @@ async function get_interactions(inter_query) {
 router.get('/', async(req, res, next) => {
   let inter_query = await get_and_squash_interaction_query({})
   inter_query = await get_interactions(inter_query)
-  res.render(
+  renderWithDefaults(req, res,
     'interaction_wrapper', 
     { interaction_descriptor: inter_query, authorized_actor: "Nikt" }
   );
@@ -141,7 +142,7 @@ router.get('/username/:username/actor_type/:actor_type', async(req, res, next) =
   let inter_query = await get_and_squash_interaction_query({$or: interaction_hint})
   console.log(inter_query)
   inter_query = await get_interactions(inter_query)
-  res.render(
+  renderWithDefaults(req, res,
     'interaction_wrapper', 
     { interaction_descriptor: inter_query, authorized_actor: String(user_id) }
   );

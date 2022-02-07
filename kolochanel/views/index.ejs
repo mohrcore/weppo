@@ -15,11 +15,10 @@
   </head>
   <body>
     <div class="content-box-constrained">
-      <%- include('kolochanel_logo.ejs', { user: user }) %>
+      <div class="content-floating main_logo_welcome">
+        <%- include('kolochanel_logo.ejs', { user: user }) %>
+      </div>
       <div class="content-box-constrained-short">
-        <div class="content-floating">
-          <p style="text-align:center"><%= login_status %></p>
-        </div>
         <div class="content-floating">
           <button class="w-100 btn kc-btn" type="button" onclick="goLogin()">Zaloguj się</button>
         </div>
