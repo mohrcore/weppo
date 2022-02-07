@@ -289,6 +289,49 @@ async function make_comment(author, contents, resource_uri) {
   return comment._id;
 }
 
+async function rank_all_users() {
+  console.log("recalculating all ranks...");
+  let users = await User.find({});
+  for (let user of users) {
+    await rank_user(user._id);
+  }
+}
+
+async function rank_user(target_userid) {
+  let rating_sum = 0;
+  let rating_count = 0;
+  let marks = [];
+
+  let interactions = await Interaction.find({client_userid: target_userid});
+  for (let i of interactions)
+    if(i.host_rating_stars) {
+      rating_sum += i.host_rating_stars;
+      marks.push(i.host_rating_stars);
+      rating_count += 1;
+    }
+
+  interactions = await Interaction.find({host_userid: target_userid});
+  for (let i of interactions)
+    if(i.client_rating_stars) {
+      rating_sum += i.client_rating_stars;
+      marks.push(i.client_rating_stars);
+      rating_count += 1;
+    }
+
+  let user = await User.findById(target_userid);
+
+  if (rating_count == 0) {
+    console.log(target_userid + " has no ranks, will set to 5")    
+    user.user_rating = 5.0;
+  } else {
+    user.user_rating = rating_sum / rating_count;
+    console.log(target_userid + " has score of " + user.user_rating + "from marks: " + marks)    
+    
+  }
+  
+  await user.save();
+}
+
 async function rate_interaction(intent, interaction_id, rating) {
   let interaction = await Interaction.findById(interaction_id)
   if(intent == "client_comments") {
@@ -299,9 +342,9 @@ async function rate_interaction(intent, interaction_id, rating) {
     interaction.host_rating_stars = rating;
   }
 
-  await Interaction.findByIdAndUpdate(
-    interaction_id, interaction
-  );
+  await Interaction.findByIdAndUpdate(interaction_id, interaction);
+  if(intent == "client_comments") {await rank_user(interaction.host_userid);}
+  if(intent == "host_comments") {await rank_user(interaction.client_userid);}
 }
 
 async function create_interaction(host_userid, client_userid) {
@@ -367,3 +410,4 @@ exports.get_sleepy_requests_for_userid = get_sleepy_requests_for_userid;
 exports.pop_sleepy_request = pop_sleepy_request;
 exports.create_interaction = create_interaction;
 exports.update_pfp = update_pfp;
+exports.rank_all_users = rank_all_users;
