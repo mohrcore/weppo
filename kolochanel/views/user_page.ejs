@@ -174,6 +174,9 @@
     <div class="p-2 d-flex flex-column bd-highlight">
       <div class="p-2 nested_content-box">
         <div class="d-flex flex-row bd-highlight">
+          <div class="position-absolute badge rounded-pill bg-danger" style="width: 15%; translate: 0% -60%;">
+            <%- include('star_rating.ejs', {rating: interaction_query.user_map[userid].user_rating / 2, starhandle: "None"}) %>
+          </div>
           <img class="p-1 img-responsive pfp-img-main" onclick="imclick(<%=interactive_page%>)" src="<%= pfp_uri %>" style="width: 45%; height: 45%; border-radius: 0.6em">
           <div class="p-2 nested_content_host-box">
             <div class="p-2 d-flex flex-row bd-highlight" style="align-items: stretch;">

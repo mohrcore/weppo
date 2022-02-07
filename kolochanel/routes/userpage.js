@@ -191,6 +191,7 @@ router.get('/username/:username', async(req, res, next) => {
     }
 
     pagedata = {
+      userid: user_id,
       username: req.params.username,
       logged_user: logged_user,
       user_quote: userdata.user_quote ? userdata.user_quote : "użytkownik nie napisał nic o sobie",
