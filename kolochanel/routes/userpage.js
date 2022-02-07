@@ -47,7 +47,6 @@ router.post('/addimage/username/:username/toiletgroup/:toiletgroup', upload.sing
     await sharp(req.file.path).resize(256, 256).jpeg({ quality: 90 }).toFile(rpath)
     fs.unlinkSync(req.file.path)
 
-    console.log()
     // dostałem req.file
     let user_id = await get_userid_from_username(req.params.username);
     let userdata = await get_userdata(user_id)

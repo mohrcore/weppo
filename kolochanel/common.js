@@ -4,6 +4,8 @@ function renderWithDefaults(req, res, name, values={}) {
   } else {
     values.user = req.user;
   }
+
+  console.log(values)
   res.render(name, values);
 }
 
