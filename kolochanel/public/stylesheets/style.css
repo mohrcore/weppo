@@ -146,6 +146,7 @@ h6 {
 }
 
 .nested_toilet_subview-box {
+  background-color: white;
   padding-top: 100%;
   max-width: 30%;
   flex-basis: 100%;
