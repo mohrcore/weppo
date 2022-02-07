@@ -36,8 +36,6 @@ async function get_payload_for_toiletid(toiletid, token) {
 
 /* GET users listing. */
 router.get('/get_toilet/username/:username', async function (req, res, next) {
-  console.log(req.params)
-  console.log("endpoint_called!")
   let matches = await get_available_matches(req.params.username)
   if (matches.length > 0) {
     let payload = await get_payload_for_toiletid(matches[0].proposed_toilet, matches[0].validation_token);
@@ -48,7 +46,6 @@ router.get('/get_toilet/username/:username', async function (req, res, next) {
 });
 
 router.post('/submit_result', async function (req, res, next) {
-  console.log("result submitted!", req.body)
   let match = await register_matchresult(
     req.body.form_token, req.body.form_decision
   )
@@ -64,7 +61,6 @@ router.post('/submit_result', async function (req, res, next) {
 });
 
 router.post('/submit_request', async function (req, res, next) {
-  console.log("result submitted!", req.body)
   await pop_sleepy_request(
     req.body.form_client_userid,
     req.body.form_host_userid
@@ -84,8 +80,6 @@ router.post('/submit_request', async function (req, res, next) {
 router.get('/get_requests/username/:username', async function (req, res, next) {
   let userid = await get_userid_from_username(req.params.username);
   let requests = await get_sleepy_requests_for_userid(userid)
-
-  console.log(requests)
 
   if (requests.length > 0) {
     let request = requests[0];

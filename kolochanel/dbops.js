@@ -77,6 +77,12 @@ async function change_bio(userid, new_bio) {
   await User.findByIdAndUpdate(userid, user);
 }
 
+async function update_pfp(userid, pfp_uri) {
+  let user = await User.findById(userid);
+  user.pfp_uri = pfp_uri;
+  await User.findByIdAndUpdate(userid, user);
+}
+
 async function change_desc(userid, new_desc) {
   let user = await User.findById(userid);
   user.user_long_description = new_desc;
@@ -343,3 +349,4 @@ exports.add_sleepy_request = add_sleepy_request;
 exports.get_sleepy_requests_for_userid = get_sleepy_requests_for_userid;
 exports.pop_sleepy_request = pop_sleepy_request;
 exports.create_interaction = create_interaction;
+exports.update_pfp = update_pfp;

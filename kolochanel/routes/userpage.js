@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-const { update_toilet, kill_toilet, kill_toilet_image, add_toilet_instance, get_userid_from_username, get_userdata, get_toiletdata, add_toiletimage, change_bio, change_desc } = require('../dbops');
+const { update_pfp, update_toilet, kill_toilet, kill_toilet_image, add_toilet_instance, get_userid_from_username, get_userdata, get_toiletdata, add_toiletimage, change_bio, change_desc } = require('../dbops');
 const { get_and_squash_interaction_query, get_interactions } = require('./interaction_view')
 mongoose.connect('mongodb://localhost:27017/kolo');
 const multer  = require('multer')
@@ -62,6 +62,24 @@ router.post('/addimage/username/:username/toiletgroup/:toiletgroup', upload.sing
     // wróć na stronę profilową.
     res.redirect("/userpage/username/" + req.params.username)
 })
+
+router.post('/changepfp/username/:username', upload.single('newpfp'), async (req, res, next) => {
+    let fpath = '/images/dyn/pfp/resized' + req.file.filename
+    let rpath = path.resolve(req.file.destination, 'dyn/pfp/resized' + req.file.filename)
+    await sharp(req.file.path).resize(256, 256).jpeg({ quality: 90 }).toFile(rpath)
+    fs.unlinkSync(req.file.path)
+
+    // dostałem req.file
+    let user_id = await get_userid_from_username(req.params.username);
+    let userdata = await get_userdata(user_id)
+    await update_pfp(
+        user_id, fpath
+    );
+
+    // wróć na stronę profilową.
+    res.redirect("/userpage/username/" + req.params.username)
+})
+
 
 router.post('/killimage/username/:username', async (req, res, next) => {
     console.log(req.params, req.body)
@@ -149,12 +167,22 @@ router.get('/username/:username', async(req, res, next) => {
         logged_user = req.user.username;
     }
 
+    let pfp_uri = "/images/box_question.jpg"
+
+    if (authed_user) {
+        pfp_uri = "/images/add_new_box.jpg"
+    }
+
+    if(userdata.pfp_uri) {
+        pfp_uri = userdata.pfp_uri
+    }
+
     pagedata = {
       username: req.params.username,
       logged_user: logged_user,
       user_quote: userdata.user_quote ? userdata.user_quote : "użytkownik nie napisał nic o sobie",
       user_long_description: userdata.user_long_description ? userdata.user_long_description : "",
-      pfp_uri: userdata.pfp_uri,
+      pfp_uri: pfp_uri,
       t1_ref: massage_shitterimages(t1_ref),
       t2_ref: massage_shitterimages(t2_ref),
       t3_ref: massage_shitterimages(t3_ref),
