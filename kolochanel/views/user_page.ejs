@@ -39,6 +39,17 @@
       for (let i of ["1", "2", "3", "4", "5", "6"]) {
         document.getElementById("modal_toiletimage_" + i).src = data.toilet_images[Number(i) - 1];
       }
+
+      let rating = data.client_rating/2;
+      for(let i of [0, 2, 4, 6, 8]) {
+        if((rating*2) > (1+i)) {
+          document.getElementById("star_" + String(i) + "_modal_star_rating").src = "/images/icons/star-fill.svg";
+        } else if ((rating*2) < (i+1)) {
+          document.getElementById("star_" + String(i) + "_modal_star_rating").src = "/images/icons/star.svg";
+        } else {
+          document.getElementById("star_" + String(i) + "_modal_star_rating").src = "/images/icons/star-half.svg";
+        }
+      }
     }
 
     function fetch_new_shitter() {
@@ -97,9 +108,21 @@
       document.getElementById("toast_username").innerHTML = "Użytkownik " + response.client_username + " chce się z tobą spotkać";
       document.getElementById("form_client_userid").value = response.client_userid;
       document.getElementById("form_host_userid").value = response.host_userid;
+      let rating = response.client_rating/2;
+      for(let i of [0, 2, 4, 6, 8]) {
+        if((rating*2) > (1+i)) {
+          document.getElementById("star_" + String(i) + "_toast_star_rating").src = "/images/icons/star-fill.svg";
+        } else if ((rating*2) < (i+1)) {
+          document.getElementById("star_" + String(i) + "_toast_star_rating").src = "/images/icons/star.svg";
+        } else {
+          document.getElementById("star_" + String(i) + "_toast_star_rating").src = "/images/icons/star-half.svg";
+        }
+      }
+
+      document.getElementById("toast_star_rating_ratingv").innerHTML = rating
       toast.show();
     }
-
+    
     function toast_respond(result) {
       let toast = new bootstrap.Toast(document.getElementById("liveToast"))
       let token = document.getElementById("modal_token").innerHTML;
@@ -174,10 +197,10 @@
     <div class="p-2 d-flex flex-column bd-highlight">
       <div class="p-2 nested_content-box">
         <div class="d-flex flex-row bd-highlight">
-          <div class="position-absolute badge rounded-pill bg-danger" style="width: 15%; translate: 0% -60%;">
+          <div class="position-absolute badge rounded-pill bg-danger" style="width: 15%; translate: 50% -70%;">
             <%- include('star_rating.ejs', {rating: interaction_query.user_map[userid].user_rating / 2, starhandle: "None"}) %>
           </div>
-          <img class="p-1 img-responsive pfp-img-main" onclick="imclick(<%=interactive_page%>)" src="<%= pfp_uri %>" style="width: 45%; height: 45%; border-radius: 0.6em">
+          <img class="p-1 img-responsive rounded-circle pfp-img-main" onclick="imclick(<%=interactive_page%>)" src="<%= pfp_uri %>" style="width: 45%; height: 45%; border-radius: 0.6em">
           <div class="p-2 nested_content_host-box">
             <div class="p-2 d-flex flex-row bd-highlight" style="align-items: stretch;">
               <% if(interactive_page) { %>
@@ -243,7 +266,10 @@
 
           <div id="modal_contents" hidden>
             <div class="p-2 nested_content_host-box">
-              <div class="d-flex flex-column bd-highlight mb-3">
+              <div class="d-flex flex-column bd-highlight mb-3" style="position: relative;">
+                <div class="position-absolute badge rounded-pill bg-danger" style="width: 40%; translate: 50% -20%;">
+                  <%- include('star_rating.ejs', {rating: 0, starhandle: "modal_star_rating"}) %>
+                </div>      
                 <img id="modal_pfp" class="p-1 img-responsive rounded-circle" src="/images/empty_box.jpg"
                   style="width: 40%; height: 40%">
                 <div class="p-2">
@@ -370,10 +396,13 @@
   </div>
 
   <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-    <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-body kc-modal">
+    <div id="liveToast" class="toast hide" role="alert" data-bs-autohide='false' aria-live="assertive" aria-atomic="true">
+      <div class="toast-body kc-modal" style="position: relative;">
         <h2 id="toast_username"></h2>
         <img id="toast_pfp" class="p-1 img-responsive rounded-circle" src="/images/empty_box.jpg" style="width:50%">
+        <div class="position-absolute badge rounded-pill bg-danger" style="width: 40%; translate: -40% -20%;">
+          <%- include('star_rating.ejs', {rating: 0, starhandle: "toast_star_rating"}) %>
+        </div>      
         <div class="d-grid gap-2">
           <button class="btn btn-success" type="button" onclick="toast_respond('true')">Pewnie!</button>
           <button class="btn btn-danger" type="button" onclick="toast_respond('false')">Wolę nie</button>

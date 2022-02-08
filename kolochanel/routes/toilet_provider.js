@@ -28,7 +28,8 @@ async function get_payload_for_toiletid(toiletid, token) {
     user_quote: userdata.user_quote,
     user_long_description: userdata.user_long_description,
     toilet_images: toiletimages,
-    validation_token: token
+    validation_token: token,
+    client_rating: userdata.user_rating,
   }
 
   return payload;
@@ -89,7 +90,8 @@ router.get('/get_requests/username/:username', async function (req, res, next) {
       client_userid: client_userid,
       client_username: client_data.username,
       client_pfp: client_data.pfp_uri,
-      host_userid: userid
+      host_userid: userid,
+      client_rating: client_data.user_rating,
     }))
   } else {
     res.send(JSON.stringify({ done: "done" }))

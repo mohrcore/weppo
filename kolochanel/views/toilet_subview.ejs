@@ -134,10 +134,10 @@
                         <input class="form-control" name="killimage_boxtarget" id="killimage_boxtarget" type="text" hidden>
                         <input class="form-control" name="killimage_imtarget" id="killimage_imtarget" type="text" hidden>
                     </form>
-                    <div class="p-1 img-responsive" style="width: 33%;">
-                        <img class="p-1 img-responsive" style="width: 100%;" src="<%= tref.toiletimages[i] %>">
+                    <div class="p-1 img-responsive" style="width: 33%; position:relative">
+                        <img class="p-1 img-responsive" style="width: 100%;" src="<%= tref.toiletimages[i] %>"></img>
                         <% if (interactive_page == true) { %>   <!-- to rzuca błędami lintera, ale działa (tm)-->
-                            <img style="position:absolute; height: 1.5rem; translate: 330% -430%;" onclick="killimage(<%=imgroup%>, 1+<%=i%>);" src="/images/icons/trash-fill.svg">
+                            <img style="position:absolute; height: 1.5rem; right:0%; top:0%" onclick="killimage(<%=imgroup%>, 1+<%=i%>);" src="/images/icons/trash-fill.svg">
                         <% } %>    
                     </div>
                 <% } %>
