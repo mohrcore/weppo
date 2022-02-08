@@ -2,8 +2,8 @@
 weppo projects
 
 # AUTHORS
-Krzysztof @mohrcore
-Zbigniew @zbigos
+- Krzysztof @mohrcore Boroński
+- Zbigniew @zbigos Drozd
 
 # RUNNING
 - initialize database with ./initdb.sh
