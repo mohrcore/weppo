@@ -1,12 +1,34 @@
-# KOLO CHANEL 
-weppo project
+# KOLO CHANEL
+#### Projekt na WEPPO
 
-# AUTHORS
-- Krzysztof @mohrcore Boroński
-- Zbigniew @zbigos Drozd
+Wymagania:
+* System oparty o Linux
+* MongoDB
+* npm/node
 
-# RUNNING
-- initialize database with ./initdb.sh
-- run website by cd wepppo && DEBUG=kolochanel:* npm start
-- python3 dbops.py dump to save db state
-- python3 dbops.py load to load db state
+Inicjalizacja bazy danych:
+```
+./initdb.sh
+```
+
+Instalacja zależności:
+```
+cd kolochanel
+npm install
+```
+
+Uruchamianie
+```
+cd kolochanel
+PORT=<port dla serwera> npm start
+```
+
+Inne:
+
+`python3 dbops.py dump` - zrzut bazy danych
+
+`python3 dbops.py load` - alternatywna metoda wczytywaniania bazy danych
+
+### Autorzy
+* Zbigniew Drozd
+* Krzysztof Boroński
