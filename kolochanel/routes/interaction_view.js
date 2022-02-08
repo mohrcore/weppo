@@ -27,9 +27,10 @@ async function get_and_squash_interaction_query(interaction_hint) {
   let required_comments = {};
   let required_users = {};
 
-  let rinteractions = await Interaction.find(interaction_hint);
-  let interactions = rinteractions.sort((a, b) => a.timestamp > b.timestamp);
+  let interactions = await Interaction.find(interaction_hint);
+  interactions.sort((a, b) => Date.parse(b.timestamp) > Date.parse(a.timestamp)).reverse();
   for (let interaction of interactions) {
+    console.log(interaction.timestamp, Date.parse(interaction.timestamp))
     p_interactions.push({
       _id: interaction._id,
       host_userid: interaction.host_userid ? interaction.host_userid : 'None',
