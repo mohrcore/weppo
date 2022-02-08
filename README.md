@@ -1,5 +1,5 @@
 # KOLO CHANEL 
-weppo projects
+weppo project
 
 # AUTHORS
 - Krzysztof @mohrcore Boroński
