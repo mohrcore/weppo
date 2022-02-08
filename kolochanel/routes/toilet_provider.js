@@ -71,9 +71,8 @@ router.post('/submit_request', async function (req, res, next) {
       req.body.form_host_userid,
       req.body.form_client_userid,
     )
-  }
-
-  res.status(204).send();
+      res.redirect("/")
+  } else res.status(204).send();
 });
 
 

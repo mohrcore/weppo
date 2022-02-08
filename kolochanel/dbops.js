@@ -125,17 +125,19 @@ async function produce_matches(userid) {
   for(let t of toilets)
     if(!used_toilets.has(String(t._id))) {
       let towner = await get_owner_of_toilet(t._id);
-      if(String(towner._id) != String(userid)) {
-        let m = new Match({
-          proposed_client: userid,
-          proposed_toilet: t._id,
-          validation_token: mongoose.Types.ObjectId(),
-          ranked: false
-        })
+      if(towner) {
+        if(String(towner._id) != String(userid)) {
+          let m = new Match({
+            proposed_client: userid,
+            proposed_toilet: t._id,
+            validation_token: mongoose.Types.ObjectId(),
+            ranked: false
+          })
 
-        await m.save();
+          await m.save();
+        }
       }
-  }
+    }
 }
 
 async function pop_sleepy_request(clientid, hostid) {
@@ -163,14 +165,30 @@ async function add_sleepy_request(host_userid, client_userid) {
 async function get_available_matches(username) {
   let userid = await get_userid_from_username(username)
   let matches = await Match.find({proposed_client: userid, ranked: false})
-  if (matches.length > 0)
-    return matches
+  if (matches.length > 0) {
+    let ranmatches = matches.sort((a, b) => a._id > b._id);
+    return ranmatches
+  }
   
   await produce_matches(userid)
   
   matches = await Match.find({proposed_client: userid, ranked: false})
-  return matches
+  if (matches.length > 0) {
+    let ranmatches = matches.sort((a, b) => a._id > b._id);
+    return ranmatches
+  }
+  
+  return []
 }
+
+async function produce_matches_for_all() {
+  let users = await User.find({})
+  for (let u of users) {
+    let m = await get_available_matches(u.username)
+    console.log("produced ", m.length, " matches for ", u.username)
+  }  
+}
+
 
 async function get_owner_of_toilet(toiletid) {
   let user = await User.findOne({$or: [
@@ -411,3 +429,4 @@ exports.pop_sleepy_request = pop_sleepy_request;
 exports.create_interaction = create_interaction;
 exports.update_pfp = update_pfp;
 exports.rank_all_users = rank_all_users;
+exports.produce_matches_for_all = produce_matches_for_all;

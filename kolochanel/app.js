@@ -13,7 +13,7 @@ var usersRouter = require('./routes/users');
 var interactionRouter = require('./routes/interaction_view');
 var userpageRouter = require('./routes/userpage');
 var endpointRouter = require('./routes/toilet_provider');
-const {rank_all_users} = require('./dbops')
+const {produce_matches_for_all, rank_all_users} = require('./dbops')
 /* passport.use(localauth.strategy);
 passport.deserializeUser(localauth.deserializeUser);
 passport.serializeUser(localauth.serializeUser);
@@ -44,7 +44,7 @@ app.use('/userpage', userpageRouter);
 app.use('/endpoint', endpointRouter);
 
 rank_all_users();
-
+produce_matches_for_all();
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
